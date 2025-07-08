@@ -624,25 +624,16 @@ function checkFirebaseConnection() {
         } else {
             console.log('Firebase 연결이 끊어졌습니다.');
             showNotification('인터넷 연결을 확인하세요. 일부 기능이 제한될 수 있습니다.', 'error');
-            // 연결 상태 표시 (선택사항)
-            showConnectionStatus();
+            // 연결 상태 표시 기능 비활성화
+            // showConnectionStatus();
         }
     });
 }
 
-// 연결 상태 표시
+// 연결 상태 표시 (비활성화됨)
 function showConnectionStatus() {
-    let statusElement = document.querySelector('.connection-status');
-    if (!statusElement) {
-        statusElement = document.createElement('div');
-        statusElement.className = 'connection-status';
-        statusElement.innerHTML = `
-            <i class="fas fa-wifi"></i>
-            <span>오프라인 상태</span>
-        `;
-        document.body.appendChild(statusElement);
-    }
-    statusElement.style.display = 'block';
+    // 연결 상태 표시를 비활성화합니다
+    return;
 }
 
 // Firebase에서 데이터 불러오기
