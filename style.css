@@ -376,22 +376,145 @@ body {
     
     /* 모바일 터치 최적화 */
     .btn-primary, .btn-secondary, .btn-danger, .btn-edit {
-        min-height: 48px;
-        padding: 12px 20px;
-        font-size: 1rem;
-        margin: 4px;
+        min-height: 36px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        margin: 2px;
         touch-action: manipulation;
     }
     
     .item-actions {
-        gap: 8px;
+        gap: 6px;
         margin-top: 8px;
     }
     
     .item-actions .btn-edit,
     .item-actions .btn-danger {
-        min-width: 48px;
+        min-width: 32px;
+        padding: 4px 6px;
+        font-size: 0.7rem;
+    }
+
+    /* 시공 스케쥴 - 캘린더 모바일 최적화 */
+    .schedule-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .btn-view {
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        flex: 0 0 auto;
+        border-radius: 6px;
+    }
+    
+    .calendar-container {
+        overflow-x: auto;
+        margin: 15px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        min-width: 100%;
+        background: #f8f9fa;
+    }
+    
+    .calendar-day {
+        min-height: 95px;
+        padding: 8px;
+        font-size: 0.8rem;
+        background: white;
+        border-radius: 4px;
+    }
+    
+    .day-number {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+    
+    .calendar-event {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+        margin: 1px 0;
+        border-radius: 3px;
+        line-height: 1.2;
+    }
+
+    /* 시공 순서도 - 연결선 개선 */
+    .step-connector {
+        width: 3px;
+        height: 100%;
+        background: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 50%, #d1d5db 100%);
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        border-radius: 2px;
+        opacity: 1;
+    }
+    
+    .timeline-step:not(:last-child) .step-connector {
+        bottom: -25px;
+        height: calc(100% + 50px);
+    }
+
+    /* 중요사항 - 모바일에서 가로 정렬 */
+    .important-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .important-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
         padding: 12px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        border-left: 3px solid #3b82f6;
+    }
+
+    .important-icon {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background: #f3f4f6;
+        color: #6b7280;
+        font-size: 1.1rem;
+    }
+
+    .important-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .important-content h4 {
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        color: #1f2937;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .important-content p {
+        font-size: 0.8rem;
+        color: #6b7280;
+        line-height: 1.3;
+        margin: 0;
     }
     
     /* 카드 간격 증가 */
@@ -457,17 +580,97 @@ body {
     
     /* 모바일 터치 최적화 강화 */
     .btn-primary, .btn-secondary, .btn-danger, .btn-edit {
-        min-height: 52px;
-        padding: 14px 20px;
-        font-size: 1rem;
-        margin: 6px 2px;
+        min-height: 36px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        margin: 3px 2px;
         border-radius: 8px;
     }
     
     .item-actions .btn-edit,
     .item-actions .btn-danger {
-        min-width: 52px;
-        padding: 14px;
+        min-width: 32px;
+        padding: 6px;
+        font-size: 0.7rem;
+    }
+
+    /* 시공 스케쥴 - 캘린더 모바일 최적화 */
+    .schedule-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .btn-view {
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        flex: 0 0 auto;
+    }
+    
+    .calendar-container {
+        overflow-x: auto;
+        margin: 10px 0;
+    }
+    
+    .calendar-day {
+        min-height: 85px;
+        padding: 6px;
+        font-size: 0.8rem;
+    }
+    
+    .day-number {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+    
+    .calendar-event {
+        font-size: 0.65rem;
+        padding: 1px 3px;
+        margin: 1px 0;
+        border-radius: 2px;
+    }
+
+    /* 중요사항 - 모바일에서 가로 정렬 */
+    .important-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+        border-left: 3px solid #3b82f6;
+    }
+
+    .important-icon {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background: #f3f4f6;
+        color: #6b7280;
+        font-size: 1rem;
+    }
+
+    .important-content h4 {
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+        color: #1f2937;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .important-content p {
+        font-size: 0.75rem;
+        color: #6b7280;
+        line-height: 1.3;
+        margin: 0;
     }
     
     /* 카드 스타일 개선 */
@@ -1023,9 +1226,9 @@ form {
 /* 모바일 모달 최적화 */
 @media (max-width: 768px) {
     .modal-content {
-        width: 95%;
-        margin: 2% auto;
-        max-height: 94vh;
+        width: 90%;
+        margin: 8% auto;
+        max-height: 85vh;
         border-radius: 12px;
     }
     
@@ -1114,9 +1317,9 @@ form {
 
 @media (max-width: 480px) {
     .modal-content {
-        width: 98%;
-        margin: 1% auto;
-        max-height: 98vh;
+        width: 85%;
+        margin: 12% auto;
+        max-height: 75vh;
         border-radius: 8px;
     }
     
@@ -1164,6 +1367,178 @@ form {
         font-size: 1rem;
         border-radius: 8px;
         flex: 1;
+    }
+}
+
+/* 사용자 정의 확인 모달 스타일 */
+.confirm-modal {
+    display: none;
+    position: fixed;
+    z-index: 1100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+}
+
+.confirm-modal-content {
+    position: relative;
+    background-color: white;
+    margin: 20% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: confirmSlideIn 0.3s ease;
+}
+
+@keyframes confirmSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.confirm-modal-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.confirm-modal-header i {
+    font-size: 1.5rem;
+}
+
+.confirm-modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.confirm-modal-body {
+    padding: 25px;
+    text-align: center;
+}
+
+.confirm-modal-body p {
+    font-size: 1rem;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0 0 25px 0;
+}
+
+.confirm-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.confirm-modal-actions .btn-cancel {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.confirm-modal-actions .btn-cancel:hover {
+    background: #555;
+}
+
+.confirm-modal-actions .btn-confirm {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.confirm-modal-actions .btn-confirm:hover {
+    background: #c82333;
+}
+
+/* 모바일 확인 모달 최적화 */
+@media (max-width: 768px) {
+    .confirm-modal-content {
+        width: 85%;
+        margin: 25% auto;
+        max-width: 350px;
+    }
+    
+    .confirm-modal-header {
+        padding: 18px 22px;
+    }
+    
+    .confirm-modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .confirm-modal-body {
+        padding: 22px;
+    }
+    
+    .confirm-modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .confirm-modal-actions .btn-cancel,
+    .confirm-modal-actions .btn-confirm {
+        min-height: 48px;
+        padding: 14px 24px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .confirm-modal-content {
+        width: 80%;
+        margin: 30% auto;
+        max-width: 300px;
+    }
+    
+    .confirm-modal-header {
+        padding: 16px 20px;
+    }
+    
+    .confirm-modal-header h3 {
+        font-size: 1rem;
+    }
+    
+    .confirm-modal-body {
+        padding: 20px;
+    }
+    
+    .confirm-modal-body p {
+        font-size: 0.95rem;
+    }
+    
+    .confirm-modal-actions .btn-cancel,
+    .confirm-modal-actions .btn-confirm {
+        min-height: 50px;
+        padding: 16px 24px;
+        font-size: 1rem;
     }
 }
 

@@ -153,6 +153,61 @@ function init() {
     loadSchedulesFromFirebase();
     loadWorkflowFromFirebase();
     checkFirebaseConnection();
+    
+    // 사용자 정의 확인 모달 이벤트 설정
+    setupCustomConfirmModal();
+}
+
+// 사용자 정의 확인 모달 함수
+function customConfirm(message) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        const messageElement = document.getElementById('confirmMessage');
+        const confirmBtn = document.getElementById('confirmOk');
+        const cancelBtn = document.getElementById('confirmCancel');
+        
+        messageElement.textContent = message;
+        modal.style.display = 'block';
+        
+        const handleConfirm = () => {
+            modal.style.display = 'none';
+            cleanup();
+            resolve(true);
+        };
+        
+        const handleCancel = () => {
+            modal.style.display = 'none';
+            cleanup();
+            resolve(false);
+        };
+        
+        const cleanup = () => {
+            confirmBtn.removeEventListener('click', handleConfirm);
+            cancelBtn.removeEventListener('click', handleCancel);
+        };
+        
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+    });
+}
+
+// 사용자 정의 확인 모달 이벤트 설정
+function setupCustomConfirmModal() {
+    const modal = document.getElementById('confirmModal');
+    
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // ESC 키로 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            modal.style.display = 'none';
+        }
+    });
 }
 
 // Firebase에서 스케쥴 데이터 실시간 로드
@@ -548,7 +603,8 @@ async function handleImportantSubmit(e) {
 
 // 중요사항 삭제
 async function deleteImportant(id) {
-    if (confirm('정말로 이 중요사항을 삭제하시겠습니까?')) {
+    const confirmed = await customConfirm('정말로 이 중요사항을 삭제하시겠습니까?');
+    if (confirmed) {
         // Firebase에서 삭제
         await deleteImportantFromFirebase(id);
     }
@@ -954,13 +1010,16 @@ function editScheduleFromDetail() {
 }
 
 async function deleteScheduleFromDetail() {
-    if (selectedSchedule && confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-        try {
-            await deleteScheduleFromFirebase(selectedSchedule.id);
-            closeScheduleDetailModal();
-        } catch (error) {
-            console.error('스케쥴 삭제 오류:', error);
-            showNotification('일정 삭제 중 오류가 발생했습니다.', 'error');
+    if (selectedSchedule) {
+        const confirmed = await customConfirm('정말로 이 일정을 삭제하시겠습니까?');
+        if (confirmed) {
+            try {
+                await deleteScheduleFromFirebase(selectedSchedule.id);
+                closeScheduleDetailModal();
+            } catch (error) {
+                console.error('스케쥴 삭제 오류:', error);
+                showNotification('일정 삭제 중 오류가 발생했습니다.', 'error');
+            }
         }
     }
 }
@@ -1032,7 +1091,8 @@ async function handleScheduleSubmit(e) {
 }
 
 async function deleteSchedule(id) {
-    if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+    const confirmed = await customConfirm('정말로 이 일정을 삭제하시겠습니까?');
+    if (confirmed) {
         try {
             await deleteScheduleFromFirebase(id);
         } catch (error) {
@@ -1150,7 +1210,8 @@ async function handleBudgetSubmit(e) {
 }
 
 async function deleteBudget(id) {
-    if (confirm('정말로 이 예산 항목을 삭제하시겠습니까?')) {
+    const confirmed = await customConfirm('정말로 이 예산 항목을 삭제하시겠습니까?');
+    if (confirmed) {
         // Firebase에서 삭제
         await deleteBudgetFromFirebase(id);
     }
@@ -1269,7 +1330,8 @@ async function toggleMemoCompleted(memoId, completed) {
 }
 
 async function deleteMemo(id) {
-    if (confirm('정말로 이 메모를 삭제하시겠습니까?')) {
+    const confirmed = await customConfirm('정말로 이 메모를 삭제하시겠습니까?');
+    if (confirmed) {
         // Firebase에서 삭제
         await deleteMemoFromFirebase(id);
     }
