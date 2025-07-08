@@ -117,7 +117,6 @@ body {
     display: flex;
     gap: 15px;
     margin-bottom: 30px;
-    margin-top: 15px;
     padding: 0 5px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -621,8 +620,8 @@ body {
     }
     
     .calendar-day {
-        min-height: 42px;
-        padding: 3px;
+        min-height: 50px;
+        padding: 4px;
         font-size: 0.8rem;
     }
     
@@ -679,10 +678,6 @@ body {
         color: #6b7280;
         line-height: 1.3;
         margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 200px;
     }
     
     /* 카드 스타일 개선 */
@@ -933,6 +928,26 @@ body {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* 예상 사용 금액 스타일 */
+.estimated-usage {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    border-left: 3px solid #10b981;
+}
+
+/* 예상 잔여예산 스타일 */
+.estimated-remaining {
+    font-size: 0.85rem;
+    color: #10b981;
+    margin-top: 4px;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
 /* 메모 완료 체크박스 스타일 */
 .checkbox-label {
     display: flex;
@@ -1036,13 +1051,28 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     color: #2c3e50;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    max-height: 2.6em;
+    line-height: 1.3;
 }
 
 .important-content p {
     margin: 0 0 12px 0;
     color: #555;
-    line-height: 1.5;
+    line-height: 1.4;
     font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    max-height: 4.2em;
 }
 
 .important-actions {
@@ -1429,12 +1459,12 @@ form {
 .confirm-modal-content {
     position: relative;
     background-color: white;
-    margin: 10% auto;
+    margin: 20% auto;
     padding: 0;
-    width: 85%;
-    max-width: 500px;
-    min-height: 250px;
-    max-height: 80vh;
+    width: 70%;
+    max-width: 400px;
+    min-height: 200px;
+    max-height: 60vh;
     border-radius: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     animation: confirmSlideIn 0.3s ease;
@@ -1676,6 +1706,8 @@ form {
     border-radius: 15px;
     padding: 20px;
     margin-top: 20px;
+    max-width: 800px;
+    margin: 20px auto 0 auto;
 }
 
 .calendar-header {
@@ -1736,8 +1768,8 @@ form {
 
 .calendar-day {
     background: white;
-    min-height: 45px;
-    padding: 3px;
+    min-height: 80px;
+    padding: 8px;
     position: relative;
     cursor: pointer;
     transition: background-color 0.3s ease;

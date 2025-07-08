@@ -571,6 +571,13 @@ function openImportantModal(id = null, title = '', content = '', icon = 'comment
     currentEditingType = 'important';
     currentEditingId = id;
     
+    // 스크롤 위치 기억 및 body 스크롤 방지
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollTop}px`;
+    document.body.style.width = '100%';
+    
     document.getElementById('importantTitle').value = title;
     document.getElementById('importantContent').value = content;
     document.getElementById('importantIcon').value = icon;
@@ -581,6 +588,20 @@ function openImportantModal(id = null, title = '', content = '', icon = 'comment
 // 중요사항 모달 닫기
 function closeImportantModal() {
     document.getElementById('importantModal').style.display = 'none';
+    
+    // body 스크롤 복원
+    const scrollTop = Math.abs(parseInt(document.body.style.top || 0));
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    
+    // 원래 스크롤 위치로 복원
+    if (scrollTop > 0) {
+        document.documentElement.scrollTop = scrollTop;
+        document.body.scrollTop = scrollTop;
+    }
+    
     currentEditingId = null;
     currentEditingType = null;
 }
@@ -938,24 +959,36 @@ function createCalendarEvent(schedule, date) {
     const isStart = schedule.startDate === dateStr;
     const isEnd = schedule.endDate === dateStr;
     
+    // 제목 길이 제한 (캘린더 가독성 개선)
+    const truncateTitle = (title, maxLength = 12) => {
+        return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+    };
+    
     if (isStart && isEnd) {
         // 하루짜리 일정
-        eventElement.textContent = schedule.title;
+        eventElement.textContent = truncateTitle(schedule.title);
     } else if (isStart) {
-        eventElement.textContent = schedule.title + ' (시작)';
+        eventElement.textContent = truncateTitle(schedule.title) + ' (시작)';
         eventElement.classList.add('event-start');
     } else if (isEnd) {
-        eventElement.textContent = schedule.title + ' (종료)';
+        eventElement.textContent = truncateTitle(schedule.title) + ' (종료)';
         eventElement.classList.add('event-end');
     } else {
-        eventElement.textContent = schedule.title;
+        eventElement.textContent = truncateTitle(schedule.title);
         eventElement.classList.add('event-ongoing');
     }
     
-    // 이벤트 클릭시 상세보기 모달 열기
+    // 이벤트 클릭시 상세보기 모달 열기 (스크롤 문제 해결)
     eventElement.addEventListener('click', (e) => {
-        e.stopPropagation();
+        e.preventDefault();
+        // 스크롤 위치 기억
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         openScheduleDetailModal(schedule);
+        // 스크롤 위치 복원
+        requestAnimationFrame(() => {
+            document.documentElement.scrollTop = scrollTop;
+            document.body.scrollTop = scrollTop;
+        });
     });
     
     return eventElement;
@@ -1233,6 +1266,9 @@ function renderBudgets() {
         const noteHighlighted = budget.note ? 
             highlightText(budget.note, searchFilters.budget.text) : '';
         
+        // 사용금액이 0이고 예상금액만 있는 경우 예상 사용 금액 표시
+        const isEstimatedOnly = budget.used === 0 && budget.estimated > 0;
+        
         budgetElement.innerHTML = `
             <div class="item-header">
                 <h3 class="item-title">${categoryHighlighted}</h3>
@@ -1248,6 +1284,7 @@ function renderBudgets() {
             <div class="item-meta">
                 <span><i class="fas fa-calculator"></i> 예상 금액: ${formatCurrency(budget.estimated || 0)}</span>
                 <span><i class="fas fa-credit-card"></i> 사용 금액: ${formatCurrency(budget.used)}</span>
+                ${isEstimatedOnly ? `<div class="estimated-usage"><i class="fas fa-chart-line"></i> 예상 사용 금액: ${formatCurrency(budget.estimated)}</div>` : ''}
             </div>
             ${noteHighlighted ? `<div class="item-description"><i class="fas fa-sticky-note"></i> ${noteHighlighted}</div>` : ''}
         `;
@@ -1260,11 +1297,32 @@ function renderBudgets() {
 function updateBudgetSummary() {
     const totalBudget = 15000000; // 총 예산 1500만원 고정
     const used = budgets.reduce((sum, budget) => sum + budget.used, 0);
+    
+    // 예상 예산 계산 (사용금액이 0이고 예상금액만 있는 경우 예상금액 사용)
+    const estimatedUsed = budgets.reduce((sum, budget) => {
+        if (budget.used > 0) {
+            return sum + budget.used; // 실제 사용금액 있으면 사용금액 사용
+        } else if (budget.estimated > 0) {
+            return sum + budget.estimated; // 예상금액만 있으면 예상금액 사용
+        }
+        return sum;
+    }, 0);
+    
     const remaining = totalBudget - used;
+    const estimatedRemaining = totalBudget - estimatedUsed;
     
     elements.totalBudget.textContent = formatCurrency(totalBudget);
     elements.usedBudget.textContent = formatCurrency(used);
-    elements.remainingBudget.textContent = formatCurrency(remaining);
+    
+    // 예상 예산이 실제 사용 예산과 다른 경우 예상 잔여예산 표시
+    if (estimatedUsed !== used) {
+        elements.remainingBudget.innerHTML = `
+            ${formatCurrency(remaining)}
+            <div class="estimated-remaining">예상 잔여: ${formatCurrency(estimatedRemaining)}</div>
+        `;
+    } else {
+        elements.remainingBudget.textContent = formatCurrency(remaining);
+    }
 }
 
 // === 메모 관리 함수들 ===
