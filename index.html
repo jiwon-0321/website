@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>인테리어 시공 일정 관리 시스템</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="header-top">
+                <div class="header-title" style="cursor: pointer;" onclick="switchTab('schedule')">
+                    <h1><i class="fas fa-home"></i> 인테리어 시공 일정 관리</h1>
+                    <p>주소 : 구로동 339-85 2층</p>
+                </div>
+                <div class="global-search">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearch" placeholder="현재 탭에서 검색...">
+                        <button id="clearSearch" class="clear-search" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 네비게이션 탭 -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="schedule">
+                <i class="fas fa-calendar-alt"></i> 
+                <span>시공 스케쥴</span>
+                <span class="tab-count" id="scheduleCount">0</span>
+            </button>
+            <button class="tab-btn" data-tab="workflow">
+                <i class="fas fa-project-diagram"></i> 
+                <span>시공 순서도</span>
+            </button>
+            <button class="tab-btn" data-tab="budget">
+                <i class="fas fa-dollar-sign"></i> 
+                <span>예산 관리</span>
+                <span class="tab-count" id="budgetCount">0</span>
+            </button>
+            <button class="tab-btn" data-tab="memo">
+                <i class="fas fa-sticky-note"></i> 
+                <span>메모</span>
+                <span class="tab-count" id="memoCount">1</span>
+            </button>
+            <button class="tab-btn" data-tab="important">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <span>중요사항</span>
+            </button>
+        </nav>
+
+        <!-- 시공 스케쥴 관리 섹션 -->
+        <section id="schedule" class="content-section active">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>시공 스케쥴</h2>
+                    <div class="section-filters">
+                        <div class="filter-group">
+                            <select id="scheduleStatusFilter" class="filter-select">
+                                <option value="">모든 상태</option>
+                                <option value="pending">대기중</option>
+                                <option value="in-progress">진행중</option>
+                                <option value="completed">완료</option>
+                            </select>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="scheduleSearch" placeholder="일정 검색...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="schedule-controls">
+                    <button class="btn-view" id="listViewBtn">
+                        <i class="fas fa-list"></i> 목록보기
+                    </button>
+                    <button class="btn-view active" id="calendarViewBtn">
+                        <i class="fas fa-calendar"></i> 캘린더보기
+                    </button>
+                    <button class="btn-primary" id="addScheduleBtn">
+                        <i class="fas fa-plus"></i> 일정 추가
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 캘린더 뷰 -->
+            <div class="calendar-container" id="calendarContainer">
+                <div class="calendar-header">
+                    <button class="calendar-nav" id="prevMonth">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 class="calendar-title" id="calendarTitle">2024년 7월</h3>
+                    <button class="calendar-nav" id="nextMonth">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- 캘린더가 여기에 동적으로 생성됩니다 -->
+                </div>
+            </div>
+            
+            <!-- 목록 뷰 -->
+            <div class="schedule-container" id="scheduleContainer" style="display: none;">
+                <div class="schedule-list" id="scheduleList">
+                    <!-- 스케줄 항목들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 시공 순서도 섹션 -->
+        <section id="workflow" class="content-section">
+            <div class="workflow-timeline-container">
+                <h3>시공 순서도</h3>
+                <div class="workflow-timeline">
+                    <!-- 전체 진행률 표시 -->
+                    <div class="timeline-header-compact">
+                        <div class="progress-summary-line">
+                            <span class="progress-text">
+                                <strong id="overallProgress">0%</strong> 완료
+                            </span>
+                            <div class="progress-stats-inline">
+                                <span class="stat-compact completed">
+                                    <i class="fas fa-check"></i> 
+                                    <span id="completedSteps">0</span>
+                                </span>
+                                <span class="stat-compact in-progress">
+                                    <i class="fas fa-play"></i> 
+                                    <span id="inProgressSteps">0</span>
+                                </span>
+                                <span class="stat-compact pending">
+                                    <i class="fas fa-clock"></i> 
+                                    <span id="pendingSteps">8</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 시공 단계 타임라인 -->
+                    <div class="timeline-steps">
+                        <div class="timeline-step" data-step="1" data-name="샤시" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">1</div>
+                                    <div class="step-icon"><i class="fas fa-window-maximize"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">샤시</h4>
+                                    <p class="step-description">창호 프레임 설치 및 유리 삽입</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[0])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="2" data-name="전기" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">2</div>
+                                    <div class="step-icon"><i class="fas fa-bolt"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">전기</h4>
+                                    <p class="step-description">전기 배선 및 기초 공사</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[1])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="3" data-name="문" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">3</div>
+                                    <div class="step-icon"><i class="fas fa-door-open"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">문</h4>
+                                    <p class="step-description">실내외 문짝 설치</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[2])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="4" data-name="타일" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">4</div>
+                                    <div class="step-icon"><i class="fas fa-th-large"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">타일</h4>
+                                    <p class="step-description">기존 타일 철거 및 신규 타일 시공</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[3])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="5" data-name="목공" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">5</div>
+                                    <div class="step-icon"><i class="fas fa-hammer"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">목공</h4>
+                                    <p class="step-description">목재 가구 및 인테리어 설치</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[4])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="6" data-name="마감재" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">6</div>
+                                    <div class="step-icon"><i class="fas fa-paint-roller"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">벽지+바닥</h4>
+                                    <p class="step-description">벽지 도배 및 바닥재 시공</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[5])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="7" data-name="전기마감" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">7</div>
+                                    <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">전기마감</h4>
+                                    <p class="step-description">조명 및 전기기구 최종 설치</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[6])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="8" data-name="청소" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">8</div>
+                                    <div class="step-icon"><i class="fas fa-broom"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">청소</h4>
+                                    <p class="step-description">최종 청소 및 정리</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[7])">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 워크플로우 제어 버튼들 -->
+                <div class="workflow-controls">
+                    <button class="btn-secondary" id="viewWorkflowDetails">
+                        <i class="fas fa-list"></i> 세부 내용 관리
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 예산 관리 섹션 -->
+        <section id="budget" class="content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>예산 관리</h2>
+                    <div class="section-filters">
+                        <div class="filter-group">
+                            <select id="budgetSortFilter" class="filter-select">
+                                <option value="used">금액순 (사용 금액)</option>
+                                <option value="category">항목명순</option>
+                            </select>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="budgetSearch" placeholder="예산 항목 검색...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" id="addBudgetBtn">
+                    <i class="fas fa-plus"></i> 예산 항목 추가
+                </button>
+            </div>
+            <div class="budget-summary">
+                <div class="budget-card">
+                    <h3>총 예산</h3>
+                    <span class="budget-amount" id="totalBudget">15,000,000원</span>
+                </div>
+                <div class="budget-card">
+                    <h3>사용 금액</h3>
+                    <span class="budget-amount used" id="usedBudget">0원</span>
+                </div>
+                <div class="budget-card">
+                    <h3>잔여 예산</h3>
+                    <span class="budget-amount remaining" id="remainingBudget">15,000,000원</span>
+                </div>
+            </div>
+            <div class="budget-container">
+                <div class="budget-list" id="budgetList">
+                    <!-- 예산 항목들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 메모 관리 섹션 -->
+        <section id="memo" class="content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>메모</h2>
+                    <div class="section-filters">
+                        <div class="filter-group">
+                            <select id="memoSortFilter" class="filter-select">
+                                <option value="date">최신순</option>
+                                <option value="title">제목순</option>
+                            </select>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="memoSearch" placeholder="메모 검색...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" id="addMemoBtn">
+                    <i class="fas fa-plus"></i> 메모 추가
+                </button>
+            </div>
+            <div class="memo-container">
+                <div class="memo-list" id="memoList">
+                    <!-- 메모 항목들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 중요사항 관리 섹션 -->
+        <section id="important" class="content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>중요사항</h2>
+                </div>
+                <button class="btn-primary" id="addImportantBtn">
+                    <i class="fas fa-plus"></i> 중요사항 추가
+                </button>
+            </div>
+            <div class="important-container">
+                <div class="important-list">
+                    <!-- 중요사항 항목들이 여기에 동적으로 생성됩니다 -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 스케줄 추가/수정 모달 -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>일정 관리</h3>
+                <span class="close" id="closeScheduleModal">&times;</span>
+            </div>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="scheduleTitle">작업명</label>
+                    <input type="text" id="scheduleTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleStartDate">시작일</label>
+                    <input type="date" id="scheduleStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleEndDate">종료일</label>
+                    <input type="date" id="scheduleEndDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleStatus">상태</label>
+                    <select id="scheduleStatus">
+                        <option value="pending">대기중</option>
+                        <option value="in-progress">진행중</option>
+                        <option value="completed">완료</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleDescription">설명</label>
+                    <textarea id="scheduleDescription" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">저장</button>
+                    <button type="button" class="btn-secondary" id="cancelSchedule">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 예산 추가/수정 모달 -->
+    <div id="budgetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>예산 항목 관리</h3>
+                <span class="close" id="closeBudgetModal">&times;</span>
+            </div>
+            <form id="budgetForm">
+                <div class="form-group">
+                    <label for="budgetCategory">항목명</label>
+                    <input type="text" id="budgetCategory" required>
+                </div>
+                <div class="form-group">
+                    <label for="budgetEstimated">예상 금액</label>
+                    <input type="text" id="budgetEstimated" value="0" placeholder="예상되는 금액을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="budgetUsed">사용 금액</label>
+                    <input type="text" id="budgetUsed" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="budgetNote">메모</label>
+                    <textarea id="budgetNote" rows="3" placeholder="예산 항목에 대한 추가 정보나 메모를 입력하세요"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">저장</button>
+                    <button type="button" class="btn-secondary" id="cancelBudget">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 워크플로우 추가/수정 모달 -->
+    <div id="workflowModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>공정 관리</h3>
+                <span class="close" id="closeWorkflowModal">&times;</span>
+            </div>
+            <form id="workflowForm">
+                <div class="form-group">
+                    <label for="workflowName">공정명</label>
+                    <input type="text" id="workflowName" required>
+                </div>
+                <div class="form-group">
+                    <label for="workflowDuration">예상 소요일</label>
+                    <input type="number" id="workflowDuration" required>
+                </div>
+                <div class="form-group">
+                    <label for="workflowStatus">상태</label>
+                    <select id="workflowStatus">
+                        <option value="pending">대기</option>
+                        <option value="in-progress">진행중</option>
+                        <option value="completed">완료</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="workflowDescription">공정 설명</label>
+                    <textarea id="workflowDescription" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">저장</button>
+                    <button type="button" class="btn-secondary" id="cancelWorkflow">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 메모 추가/수정 모달 -->
+    <div id="memoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>메모 관리</h3>
+                <span class="close" id="closeMemoModal">&times;</span>
+            </div>
+            <form id="memoForm">
+                <div class="form-group">
+                    <label for="memoTitle">제목</label>
+                    <input type="text" id="memoTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoContent">내용</label>
+                    <textarea id="memoContent" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="memoCompleted">
+                        <span class="checkmark"></span>
+                        완료 상태로 표시
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">저장</button>
+                    <button type="button" class="btn-secondary" id="cancelMemo">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 일정 상세보기 모달 -->
+    <div id="scheduleDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>일정 상세보기</h3>
+                <span class="close" id="closeScheduleDetailModal">&times;</span>
+            </div>
+            <div class="schedule-detail-content">
+                <div class="detail-item">
+                    <label>작업명</label>
+                    <p id="detailTitle"></p>
+                </div>
+                <div class="detail-item">
+                    <label>기간</label>
+                    <p id="detailPeriod"></p>
+                </div>
+                <div class="detail-item">
+                    <label>소요일</label>
+                    <p id="detailDuration"></p>
+                </div>
+                <div class="detail-item">
+                    <label>상태</label>
+                    <p id="detailStatus" class="status-badge"></p>
+                </div>
+                <div class="detail-item">
+                    <label>설명</label>
+                    <p id="detailDescription"></p>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn-edit" id="editFromDetail">
+                        <i class="fas fa-edit"></i> 수정
+                    </button>
+                    <button class="btn-danger" id="deleteFromDetail">
+                        <i class="fas fa-trash"></i> 삭제
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 중요사항 추가/수정 모달 -->
+    <div id="importantModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>중요사항 관리</h3>
+                <span class="close" id="closeImportantModal">&times;</span>
+            </div>
+            <form id="importantForm">
+                <div class="form-group">
+                    <label for="importantTitle">제목</label>
+                    <input type="text" id="importantTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="importantContent">내용</label>
+                    <textarea id="importantContent" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="importantIcon">아이콘</label>
+                    <select id="importantIcon">
+                        <option value="comment-dots">대화</option>
+                        <option value="trash-alt">쓰레기통</option>
+                        <option value="exclamation-circle">경고</option>
+                        <option value="info-circle">정보</option>
+                        <option value="check-circle">체크</option>
+                        <option value="clock">시계</option>
+                        <option value="phone">전화</option>
+                        <option value="envelope">메일</option>
+                        <option value="dollar-sign">달러</option>
+                        <option value="tools">도구</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">저장</button>
+                    <button type="button" class="btn-secondary" id="cancelImportant">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK CDN -->
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
