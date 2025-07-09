@@ -112,7 +112,7 @@ body {
     background: rgba(0, 0, 0, 0.1);
 }
 
-/* 네비게이션 탭 개선 */
+/* 네비게이션 탭 개선 - 비율 맞추기 */
 .nav-tabs {
     display: flex;
     gap: 15px;
@@ -127,7 +127,7 @@ body {
     background: white;
     color: #666;
     border: 2px solid #f0f0f0;
-    padding: 12px 16px;
+    padding: 16px 20px;
     border-radius: 15px;
     font-size: 0.9rem;
     font-weight: 500;
@@ -141,6 +141,7 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     min-width: 120px;
     scroll-snap-align: start;
+    min-height: 60px;
 }
 
 .tab-btn:hover {
@@ -157,7 +158,8 @@ body {
 }
 
 .tab-btn i {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    line-height: 1.2;
 }
 
 .tab-count {
@@ -198,10 +200,6 @@ body {
     margin-bottom: 15px;
 }
 
-.section-filters {
-    margin-top: 10px;
-}
-
 .filter-group {
     display: flex;
     gap: 15px;
@@ -211,48 +209,305 @@ body {
 
 .filter-select {
     padding: 8px 12px;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    background: white;
     font-size: 0.9rem;
+    background: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 120px;
 }
 
 .filter-select:focus {
     outline: none;
-    border-color: #666666;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-box {
     position: relative;
     display: flex;
     align-items: center;
-    min-width: 200px;
 }
 
 .search-box i {
     position: absolute;
-    left: 12px;
+    left: 10px;
     color: #666;
     z-index: 2;
 }
 
 .search-box input {
-    width: 100%;
     padding: 8px 12px 8px 35px;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 0.9rem;
+    background: white;
     transition: all 0.3s ease;
 }
 
 .search-box input:focus {
     outline: none;
-    border-color: #666666;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 캘린더 컨테이너 - 세로폭 줄이기 */
+.calendar-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 30px;
+    max-height: 600px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.calendar-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.calendar-nav {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.calendar-nav i {
+    font-size: 1.2rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #f0f0f0;
+    height: 450px;
+    overflow: hidden;
+}
+
+.calendar-day-header {
+    background: #333333;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.calendar-day {
+    background: white;
+    padding: 8px;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.calendar-day:hover {
+    background: #f8f9fa;
+}
+
+.calendar-day.other-month {
+    background: #f5f5f5;
+    color: #999;
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    color: white;
+}
+
+.day-number {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.calendar-day.other-month .day-number {
+    color: #999;
+}
+
+.day-events {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.calendar-event {
+    background: #333333;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    line-height: 1.3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-event:hover {
+    background: #444444;
+    transform: translateY(-1px);
+}
+
+.calendar-event.event-start {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+}
+
+.calendar-event.event-end {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+.calendar-event.event-ongoing {
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+}
+
+/* 중요사항 아코디언 스타일 */
+.important-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.important-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.important-item {
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.important-item:last-child {
+    border-bottom: none;
+}
+
+.important-item:hover {
+    background: #f8f9fa;
+}
+
+.important-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.important-header:hover {
+    background: #f8f9fa;
+}
+
+.important-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.important-icon i {
+    font-size: 1.3rem;
+    color: white;
+}
+
+.important-title-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.important-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: block;
+    line-height: 1.4;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+.important-expand-icon {
+    margin-left: auto;
+    font-size: 1.2rem;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.important-item.expanded .important-expand-icon {
+    transform: rotate(180deg);
+}
+
+.important-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+    display: block;
+    clear: both;
+}
+
+.important-item.expanded .important-content {
+    max-height: 500px;
+}
+
+.important-content-inner {
+    padding: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.important-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.important-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 /* 검색 결과 하이라이트 */
@@ -462,6 +717,8 @@ body {
         margin: 1px 0;
         border-radius: 3px;
         line-height: 1.2;
+        white-space: normal;
+        word-wrap: break-word;
     }
 
     /* 시공 순서도 - 연결선 개선 */
@@ -655,6 +912,9 @@ body {
         font-size: 0.65rem;
         padding: 1px 3px;
         margin: 1px 0;
+        white-space: normal;
+        word-wrap: break-word;
+        line-height: 1.2;
         border-radius: 2px;
     }
 
@@ -4807,43 +5067,54 @@ form {
     }
     
     .important-item {
-        display: flex;
-        align-items: flex-start;
-        padding: 12px;
         margin: 8px 0;
-        background-color: #f8f9fa;
+        background-color: white;
         border-radius: 6px;
-        border-left: 4px solid #4a90e2;
+        border: 1px solid #e5e7eb;
         transition: all 0.2s ease;
+        overflow: hidden;
     }
     
     .important-item:hover {
-        background-color: #e8f4f8;
-        transform: translateX(4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .important-header {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    .important-header:hover {
+        background-color: #f8f9fa;
     }
     
     .important-icon {
         flex-shrink: 0;
-        width: 20px;
-        height: 20px;
+        width: 35px;
+        height: 35px;
         margin-right: 12px;
-        color: #4a90e2;
-        font-size: 16px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
-    .important-content {
+    .important-icon i {
+        color: white;
+        font-size: 16px;
+    }
+    
+    .important-title-section {
         flex: 1;
         min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
     }
     
     .important-title {
-        font-weight: bold;
+        font-weight: 600;
         font-size: 14px;
         color: #333;
         line-height: 1.4;
@@ -4851,6 +5122,30 @@ form {
         overflow-wrap: break-word;
         display: block;
         width: 100%;
+        margin: 0;
+    }
+    
+    .important-expand-icon {
+        margin-left: auto;
+        font-size: 14px;
+        color: #666;
+        transition: transform 0.3s ease;
+    }
+    
+    .important-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .important-item.expanded .important-content {
+        max-height: 500px;
+    }
+    
+    .important-content-inner {
+        padding: 12px;
+        border-top: 1px solid #e5e7eb;
     }
     
     .important-description {
@@ -4859,15 +5154,13 @@ form {
         line-height: 1.3;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        display: block;
-        width: 100%;
+        margin-bottom: 10px;
     }
     
-    .important-date {
-        font-size: 11px;
-        color: #888;
-        margin-top: 4px;
-        font-style: italic;
+    .important-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
     }
 }
 
@@ -4878,14 +5171,20 @@ form {
     }
     
     .important-item {
-        padding: 10px;
         margin: 6px 0;
     }
     
+    .important-header {
+        padding: 10px;
+    }
+    
     .important-icon {
-        width: 18px;
-        height: 18px;
+        width: 30px;
+        height: 30px;
         margin-right: 10px;
+    }
+    
+    .important-icon i {
         font-size: 14px;
     }
     
@@ -4893,13 +5192,13 @@ form {
         font-size: 13px;
     }
     
+    .important-content-inner {
+        padding: 10px;
+    }
+    
     .important-description {
         font-size: 11px;
     }
-    
-         .important-date {
-         font-size: 10px;
-     }
 }
 
 /* 전체 모바일 최적화 기본 설정 */

@@ -533,7 +533,7 @@ async function deleteImportantFromFirebase(importantId) {
     }
 }
 
-// 중요사항 렌더링 함수
+// 중요사항 렌더링 함수 (아코디언 형태)
 function renderImportantItems(items) {
     const importantList = document.querySelector('.important-list');
     if (!importantList) return;
@@ -545,20 +545,29 @@ function renderImportantItems(items) {
         itemElement.className = 'important-item';
         
         itemElement.innerHTML = `
-            <div class="important-icon">
-                <i class="fas fa-${item.icon}"></i>
+            <div class="important-header" onclick="toggleImportantItem('${item.id}')">
+                <div class="important-icon">
+                    <i class="fas fa-${item.icon}"></i>
+                </div>
+                <div class="important-title-section">
+                    <h4 class="important-title">${item.title}</h4>
+                </div>
+                <div class="important-expand-icon">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
             </div>
-            <div class="important-content">
-                <h4>${item.title}</h4>
-                <p>${item.content}</p>
-            </div>
-            <div class="important-actions">
-                <button class="btn-edit" onclick="openImportantModal('${item.id}', \`${item.title}\`, \`${item.content}\`, '${item.icon}')">
-                    <i class="fas fa-edit"></i> 수정
-                </button>
-                <button class="btn-danger" onclick="deleteImportant('${item.id}')">
-                    <i class="fas fa-trash"></i> 삭제
-                </button>
+            <div class="important-content" id="content-${item.id}">
+                <div class="important-content-inner">
+                    <p class="important-description">${item.content}</p>
+                    <div class="important-actions">
+                        <button class="btn-edit" onclick="openImportantModal('${item.id}', \`${item.title}\`, \`${item.content}\`, '${item.icon}')">
+                            <i class="fas fa-edit"></i> 수정
+                        </button>
+                        <button class="btn-danger" onclick="deleteImportant('${item.id}')">
+                            <i class="fas fa-trash"></i> 삭제
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
         
@@ -628,6 +637,24 @@ async function deleteImportant(id) {
     if (confirmed) {
         // Firebase에서 삭제
         await deleteImportantFromFirebase(id);
+    }
+}
+
+// 중요사항 아코디언 토글 함수
+function toggleImportantItem(id) {
+    const itemElement = document.getElementById(`content-${id}`).parentElement;
+    const expandIcon = itemElement.querySelector('.important-expand-icon i');
+    
+    if (itemElement.classList.contains('expanded')) {
+        // 닫기
+        itemElement.classList.remove('expanded');
+        expandIcon.classList.remove('fa-chevron-up');
+        expandIcon.classList.add('fa-chevron-down');
+    } else {
+        // 열기
+        itemElement.classList.add('expanded');
+        expandIcon.classList.remove('fa-chevron-down');
+        expandIcon.classList.add('fa-chevron-up');
     }
 }
 
