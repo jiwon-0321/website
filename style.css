@@ -158,8 +158,9 @@ body {
 }
 
 .tab-btn i {
-    font-size: 1.4rem;
-    line-height: 1.2;
+    /* 아이콘이 버튼 높이를 넘지 않도록 크기 조정 */
+    font-size: 1.2rem;
+    line-height: 1;
 }
 
 .tab-count {
@@ -270,11 +271,14 @@ body {
     color: white;
 }
 
+/* 중복 정의 주석 처리
 .calendar-title {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: 600;
+    color: #333;
     margin: 0;
 }
+*/
 
 .calendar-nav {
     background: rgba(255, 255, 255, 0.1);
@@ -2000,10 +2004,12 @@ form {
 }
 
 .calendar-title {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 700;
     color: #333;
     margin: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .calendar-nav {
