@@ -117,7 +117,7 @@ body {
     display: flex;
     gap: 15px;
     margin-bottom: 30px;
-    padding: 0 5px;
+    padding: 0 5px 10px 5px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
 }
@@ -127,19 +127,19 @@ body {
     background: white;
     color: #666;
     border: 2px solid #f0f0f0;
-    padding: 15px 20px;
+    padding: 12px 16px;
     border-radius: 15px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     position: relative;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    min-width: 140px;
+    min-width: 120px;
     scroll-snap-align: start;
 }
 
@@ -344,12 +344,13 @@ body {
     }
     
     .tab-btn {
-        padding: 16px 20px;
-        font-size: 1.1rem;
+        padding: 14px 16px;
+        font-size: 1rem;
         min-height: 48px;
-        min-width: 120px;
+        min-width: 110px;
         flex-shrink: 0;
         white-space: nowrap;
+        margin-bottom: 8px;
     }
     
     .section-header {
@@ -421,21 +422,32 @@ body {
         margin: 15px 0;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
     }
     
     .calendar-grid {
+        display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: 1px;
         min-width: 100%;
         background: #f8f9fa;
+        width: 100%;
+        max-width: 100%;
     }
     
     .calendar-day {
-        min-height: 95px;
-        padding: 8px;
+        min-height: 80px;
+        padding: 6px;
         font-size: 0.8rem;
         background: white;
         border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .day-number {
@@ -566,11 +578,12 @@ body {
     }
     
     .tab-btn {
-        padding: 14px 16px;
+        padding: 12px 14px;
         flex-direction: column;
         gap: 4px;
-        min-height: 52px;
-        min-width: 100px;
+        min-height: 48px;
+        min-width: 90px;
+        margin-bottom: 10px;
     }
     
     .tab-btn span:first-of-type {
@@ -617,12 +630,20 @@ body {
     .calendar-container {
         overflow-x: auto;
         margin: 10px 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
     }
     
     .calendar-day {
-        min-height: 50px;
+        min-height: 60px;
         padding: 4px;
         font-size: 0.8rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .day-number {
@@ -4646,5 +4667,292 @@ form {
     .status-badge {
         font-size: 0.8rem;
         padding: 4px 10px;
+    }
+}
+
+/* 모바일 최적화 - 네비게이션 탭 버튼 수정 */
+@media screen and (max-width: 768px) {
+    .nav-tabs {
+        padding-top: env(safe-area-inset-top, 10px);
+        padding-bottom: 8px;
+        margin-bottom: 10px;
+        min-height: 60px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .tab-btn {
+        padding: 8px 12px;
+        margin: 0 4px;
+        font-size: 14px;
+        min-width: 80px;
+        height: 40px;
+        border-radius: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .tab-btn.active {
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+    }
+    
+    /* 캘린더 모바일 최적화 - 가로 표시 및 균일한 날짜 칸 */
+    .calendar-container {
+        padding: 10px;
+        margin: 0 auto;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+    
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        min-width: 320px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px;
+    }
+    
+    .calendar-day {
+        aspect-ratio: 1;
+        min-height: 40px;
+        padding: 4px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .calendar-day:hover {
+        background-color: #f0f8ff;
+        transform: scale(1.05);
+    }
+    
+    .calendar-day.today {
+        background-color: #4a90e2;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .calendar-day.has-schedule {
+        background-color: #e8f5e8;
+        border-color: #4caf50;
+    }
+    
+    .calendar-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .calendar-header-day {
+        text-align: center;
+        padding: 8px 4px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .nav-tabs {
+        padding-top: env(safe-area-inset-top, 15px);
+        padding-bottom: 10px;
+        margin-bottom: 8px;
+        min-height: 65px;
+    }
+    
+    .tab-btn {
+        padding: 6px 10px;
+        margin: 0 2px;
+        font-size: 12px;
+        min-width: 70px;
+        height: 36px;
+        border-radius: 4px;
+    }
+    
+    /* 캘린더 480px 이하에서 더 작은 사이즈 */
+    .calendar-day {
+        min-height: 35px;
+        font-size: 11px;
+        padding: 2px;
+    }
+    
+    .calendar-header-day {
+        padding: 6px 2px;
+        font-size: 11px;
+    }
+}
+
+/* 중요사항 목록 모바일 최적화 */
+@media screen and (max-width: 768px) {
+    .important-list {
+        padding: 15px;
+        margin: 10px auto;
+        max-width: 100%;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .important-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 12px;
+        margin: 8px 0;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border-left: 4px solid #4a90e2;
+        transition: all 0.2s ease;
+    }
+    
+    .important-item:hover {
+        background-color: #e8f4f8;
+        transform: translateX(4px);
+    }
+    
+    .important-icon {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        color: #4a90e2;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .important-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .important-title {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        display: block;
+        width: 100%;
+    }
+    
+    .important-description {
+        font-size: 12px;
+        color: #666;
+        line-height: 1.3;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        display: block;
+        width: 100%;
+    }
+    
+    .important-date {
+        font-size: 11px;
+        color: #888;
+        margin-top: 4px;
+        font-style: italic;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .important-list {
+        padding: 10px;
+        margin: 8px auto;
+    }
+    
+    .important-item {
+        padding: 10px;
+        margin: 6px 0;
+    }
+    
+    .important-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        font-size: 14px;
+    }
+    
+    .important-title {
+        font-size: 13px;
+    }
+    
+    .important-description {
+        font-size: 11px;
+    }
+    
+         .important-date {
+         font-size: 10px;
+     }
+}
+
+/* 전체 모바일 최적화 기본 설정 */
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .container {
+        padding: 0 10px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    /* 터치 최적화 */
+    button, .tab-btn, .calendar-day, .important-item {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        touch-action: manipulation;
+    }
+    
+    /* 스크롤 최적화 */
+    .nav-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .nav-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* 입력 필드 모바일 최적화 */
+    input, textarea, select {
+        font-size: 16px; /* iOS 줌 방지 */
+        border-radius: 6px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: white;
+    }
+    
+    /* 모달 모바일 최적화 */
+    .modal {
+        padding: 10px;
+    }
+    
+    .modal-content {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 95%;
+        border-radius: 8px;
     }
 } 
