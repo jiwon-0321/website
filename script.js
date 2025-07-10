@@ -14,6 +14,11 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const storage = firebase.storage();
 
+// Storage 참조 설정 (CORS 문제 해결을 위한 추가 설정)
+const storageRef = storage.ref();
+storage.maxOperationRetryTime = 30000; // 30초 재시도
+storage.maxUploadRetryTime = 30000;
+
 // Firebase Storage 연결 테스트
 async function testStorageConnection() {
     try {
@@ -3220,20 +3225,55 @@ function updateTimelineStats() {
 // 이미지 업로드 함수
 async function uploadImage(file, stepId) {
     try {
-        console.log('이미지 업로드 시작:', file.name, 'stepId:', stepId);
+        console.log('🔥 이미지 업로드 시작:', file.name, 'stepId:', stepId);
+        console.log('파일 정보:', {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified
+        });
         
         const timestamp = Date.now();
-        const filename = `workflow_${stepId}_${timestamp}_${file.name}`;
-        const storageRef = storage.ref(`workflow-images/${filename}`);
         
-        console.log('Storage 참조 생성 완료:', filename);
+        // 파일명에서 특수문자 제거 (CORS 문제 해결을 위해)
+        const sanitizedName = file.name
+            .replace(/[^a-zA-Z0-9._-]/g, '_')  // 특수문자, 공백, 한글 등을 _로 치환
+            .replace(/_{2,}/g, '_')             // 연속된 _를 하나로 치환
+            .replace(/^_+|_+$/g, '')           // 앞뒤 _제거
+            .substring(0, 50);                 // 길이 제한
+        
+        const filename = `workflow_${stepId}_${timestamp}_${sanitizedName}`;
+        
+        console.log('원본 파일명:', file.name);
+        console.log('정제된 파일명:', filename);
+        
+        const fileRef = storage.ref(`workflow-images/${filename}`);
+        
+        console.log('Storage 참조 생성 완료:', fileRef.fullPath);
+        console.log('Storage 버킷:', fileRef.bucket);
+        
+        // 업로드 메타데이터 설정
+        const metadata = {
+            contentType: file.type,
+            cacheControl: 'public,max-age=3600',
+            customMetadata: {
+                'stepId': stepId.toString(),
+                'originalName': file.name,
+                'uploadedAt': new Date().toISOString()
+            }
+        };
+        
+        console.log('메타데이터:', metadata);
         
         // 이미지 업로드
-        const snapshot = await storageRef.put(file);
-        console.log('이미지 업로드 완료:', snapshot);
+        console.log('파일 업로드 시작...');
+        const snapshot = await fileRef.put(file, metadata);
+        console.log('✅ 이미지 업로드 완료:', snapshot.metadata);
         
+        // 다운로드 URL 가져오기
+        console.log('다운로드 URL 가져오기...');
         const downloadURL = await snapshot.ref.getDownloadURL();
-        console.log('다운로드 URL 생성 완료:', downloadURL);
+        console.log('✅ 다운로드 URL 생성 완료:', downloadURL);
         
         return {
             url: downloadURL,
@@ -3242,8 +3282,23 @@ async function uploadImage(file, stepId) {
             uploadedAt: new Date().toISOString()
         };
     } catch (error) {
-        console.error('이미지 업로드 중 오류:', error);
-        console.error('오류 상세:', error.message);
+        console.error('❌ 이미지 업로드 중 오류:', error);
+        console.error('오류 코드:', error.code);
+        console.error('오류 메시지:', error.message);
+        console.error('오류 상세:', error.serverResponse);
+        
+        // CORS 및 권한 문제 감지
+        if (error.code === 'storage/unauthorized') {
+            console.error('🚨 Firebase Storage 권한 오류! 보안 규칙을 확인하세요.');
+            showNotification('Firebase Storage 보안 규칙을 설정해주세요.', 'error');
+        } else if (error.message && error.message.includes('CORS')) {
+            console.error('🚨 CORS 오류 발생! Firebase Storage CORS 설정을 확인하세요.');
+            showNotification('CORS 설정 문제입니다. Firebase Console에서 설정해주세요.', 'error');
+        } else if (error.code === 'storage/unknown') {
+            console.error('🚨 알 수 없는 Storage 오류. 네트워크 또는 권한 문제일 수 있습니다.');
+            showNotification('Storage 접근 권한 문제입니다. Firebase 설정을 확인해주세요.', 'error');
+        }
+        
         throw error;
     }
 }
