@@ -2849,7 +2849,7 @@ function setupTouchGestures() {
         
         if (Math.abs(swipeDistance) < swipeThreshold) return;
         
-        const tabs = ['schedule', 'budget', 'memo'];
+        const tabs = ['schedule', 'workflow', 'budget', 'memo'];
         const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
         const currentIndex = tabs.indexOf(activeTab);
         
