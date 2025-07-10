@@ -14,6 +14,96 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const storage = firebase.storage();
 
+// Firebase Storage 연결 테스트
+async function testStorageConnection() {
+    try {
+        // Storage 참조 생성 테스트
+        const storageRef = storage.ref();
+        console.log('Firebase Storage 연결 성공');
+        return true;
+    } catch (error) {
+        console.error('Firebase Storage 연결 오류:', error);
+        return false;
+    }
+}
+
+// 테스트용 이미지 생성 함수
+function createTestImage() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 300;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // 배경 색상
+    ctx.fillStyle = '#e3f2fd';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // 테두리
+    ctx.strokeStyle = '#2196f3';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    
+    // 텍스트
+    ctx.fillStyle = '#1976d2';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('테스트 이미지', canvas.width / 2, canvas.height / 2 - 20);
+    
+    ctx.font = '16px Arial';
+    ctx.fillText('Firebase Storage 업로드 테스트', canvas.width / 2, canvas.height / 2 + 10);
+    
+    ctx.font = '12px Arial';
+    ctx.fillText(new Date().toLocaleString(), canvas.width / 2, canvas.height / 2 + 40);
+    
+    return canvas;
+}
+
+// 테스트 이미지 업로드 함수
+async function uploadTestImage(stepId = 1) {
+    try {
+        const canvas = createTestImage();
+        
+        // Canvas를 Blob으로 변환
+        const blob = await new Promise(resolve => {
+            canvas.toBlob(resolve, 'image/png');
+        });
+        
+        // File 객체 생성
+        const file = new File([blob], 'test-image.png', { type: 'image/png' });
+        
+        console.log('테스트 이미지 생성 완료:', file);
+        
+        // 이미지 업로드
+        const result = await uploadImage(file, stepId);
+        
+        console.log('테스트 이미지 업로드 성공:', result);
+        
+        // 워크플로우에 이미지 추가
+        const stepIndex = circularWorkflow.findIndex(s => s.id === stepId);
+        if (stepIndex !== -1) {
+            if (!circularWorkflow[stepIndex].images) {
+                circularWorkflow[stepIndex].images = [];
+            }
+            circularWorkflow[stepIndex].images.push(result);
+            
+            // Firebase에 저장
+            await saveWorkflowToFirebase();
+            
+            // 화면 업데이트
+            renderWorkflowImages(stepId);
+        }
+        
+        showNotification('테스트 이미지 업로드 성공!', 'success');
+        return result;
+        
+    } catch (error) {
+        console.error('테스트 이미지 업로드 실패:', error);
+        showNotification('테스트 이미지 업로드 실패: ' + error.message, 'error');
+        throw error;
+    }
+}
+
 // 전역 변수들
 let schedules = [];
 let budgets = [];
@@ -30,6 +120,16 @@ let circularWorkflow = [
     { id: 7, name: "전기마감", icon: "lightbulb", status: "pending", progress: 0, details: "", contractors: [], images: [] },
     { id: 8, name: "청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [], images: [] }
 ];
+
+// 워크플로우 이미지 필드 초기화 함수
+function initializeWorkflowImages() {
+    circularWorkflow.forEach(step => {
+        if (!step.images) {
+            step.images = [];
+        }
+    });
+    console.log('워크플로우 이미지 필드 초기화 완료');
+}
 
 let currentEditingWorkflowStep = null;
 let currentView = 'calendar';
@@ -154,6 +254,10 @@ function init() {
     loadSchedulesFromFirebase();
     loadWorkflowFromFirebase();
     checkFirebaseConnection();
+    testStorageConnection();
+    
+    // 워크플로우 이미지 필드 초기화
+    initializeWorkflowImages();
     
     // 사용자 정의 확인 모달 이벤트 설정
     setupCustomConfirmModal();
@@ -279,11 +383,17 @@ async function deleteScheduleFromFirebase(scheduleId) {
 // Firebase에 워크플로우 저장
 async function saveWorkflowToFirebase() {
     try {
+        console.log('워크플로우 Firebase 저장 시작...');
+        console.log('저장할 워크플로우 데이터:', circularWorkflow);
+        
         const workflowRef = database.ref('workflow');
         await workflowRef.set(circularWorkflow);
+        
         console.log('워크플로우가 Firebase에 성공적으로 저장되었습니다.');
+        showNotification('워크플로우가 저장되었습니다.', 'success');
     } catch (error) {
         console.error('워크플로우 Firebase 저장 중 오류:', error);
+        showNotification('워크플로우 저장 중 오류가 발생했습니다: ' + error.message, 'error');
         throw error;
     }
 }
@@ -295,6 +405,16 @@ function loadWorkflowFromFirebase() {
         const data = snapshot.val();
         if (data && Array.isArray(data) && data.length > 0) {
             circularWorkflow = data;
+            
+            // 이미지 필드 초기화 (기존 데이터 호환성)
+            circularWorkflow.forEach(step => {
+                if (!step.images) {
+                    step.images = [];
+                }
+            });
+            
+            console.log('Firebase에서 워크플로우 로드 완료:', circularWorkflow);
+            
             renderTimelineWorkflow();
             updateOverallProgress();
         }
@@ -3006,13 +3126,20 @@ function updateTimelineStats() {
 // 이미지 업로드 함수
 async function uploadImage(file, stepId) {
     try {
+        console.log('이미지 업로드 시작:', file.name, 'stepId:', stepId);
+        
         const timestamp = Date.now();
         const filename = `workflow_${stepId}_${timestamp}_${file.name}`;
         const storageRef = storage.ref(`workflow-images/${filename}`);
         
+        console.log('Storage 참조 생성 완료:', filename);
+        
         // 이미지 업로드
         const snapshot = await storageRef.put(file);
+        console.log('이미지 업로드 완료:', snapshot);
+        
         const downloadURL = await snapshot.ref.getDownloadURL();
+        console.log('다운로드 URL 생성 완료:', downloadURL);
         
         return {
             url: downloadURL,
@@ -3022,6 +3149,7 @@ async function uploadImage(file, stepId) {
         };
     } catch (error) {
         console.error('이미지 업로드 중 오류:', error);
+        console.error('오류 상세:', error.message);
         throw error;
     }
 }
@@ -3115,6 +3243,13 @@ async function addWorkflowImage(stepId) {
             // 로딩 표시
             showNotification('이미지 업로드 중...', 'info');
             
+            // images 배열이 없으면 초기화
+            if (!circularWorkflow[stepIndex].images) {
+                circularWorkflow[stepIndex].images = [];
+            }
+            
+            console.log('이미지 업로드 전 워크플로우 상태:', circularWorkflow[stepIndex]);
+            
             for (const file of files) {
                 // 파일 크기 체크 (5MB 제한)
                 if (file.size > 5 * 1024 * 1024) {
@@ -3122,8 +3257,12 @@ async function addWorkflowImage(stepId) {
                     continue;
                 }
                 
+                console.log('파일 업로드 시작:', file.name);
                 const imageData = await uploadImage(file, stepId);
+                console.log('파일 업로드 완료, 배열에 추가:', imageData);
+                
                 circularWorkflow[stepIndex].images.push(imageData);
+                console.log('현재 이미지 배열:', circularWorkflow[stepIndex].images);
             }
             
             // 이미지 목록 업데이트
