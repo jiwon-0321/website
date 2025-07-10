@@ -612,6 +612,11 @@ body {
         margin-bottom: 8px;
     }
     
+    .tab-btn i {
+        font-size: 1.2rem;
+        margin-right: 8px;
+    }
+    
     .section-header {
         flex-direction: column;
         align-items: stretch;
@@ -640,23 +645,34 @@ body {
     
     /* 모바일 터치 최적화 */
     .btn-primary, .btn-secondary, .btn-danger, .btn-edit {
-        min-height: 36px;
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        min-height: 44px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
         margin: 2px;
         touch-action: manipulation;
     }
     
+    .btn-primary i, .btn-secondary i, .btn-danger i, .btn-edit i {
+        font-size: 1.1rem;
+        margin-right: 6px;
+    }
+    
     .item-actions {
-        gap: 6px;
-        margin-top: 8px;
+        gap: 8px;
+        margin-top: 10px;
     }
     
     .item-actions .btn-edit,
     .item-actions .btn-danger {
-        min-width: 32px;
-        padding: 4px 6px;
-        font-size: 0.7rem;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .item-actions .btn-edit i,
+    .item-actions .btn-danger i {
+        font-size: 1rem;
     }
 
     /* 시공 스케쥴 - 캘린더 모바일 최적화 */
@@ -847,6 +863,11 @@ body {
         margin-bottom: 10px;
     }
     
+    .tab-btn i {
+        font-size: 1.1rem;
+        margin-bottom: 2px;
+    }
+    
     .tab-btn span:first-of-type {
         font-size: 0.9rem;
     }
@@ -858,18 +879,29 @@ body {
     
     /* 모바일 터치 최적화 강화 */
     .btn-primary, .btn-secondary, .btn-danger, .btn-edit {
-        min-height: 36px;
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        min-height: 42px;
+        padding: 8px 14px;
+        font-size: 0.85rem;
         margin: 3px 2px;
         border-radius: 8px;
     }
     
+    .btn-primary i, .btn-secondary i, .btn-danger i, .btn-edit i {
+        font-size: 1rem;
+        margin-right: 4px;
+    }
+    
     .item-actions .btn-edit,
     .item-actions .btn-danger {
-        min-width: 32px;
-        padding: 6px;
-        font-size: 0.7rem;
+        min-width: 42px;
+        min-height: 42px;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    
+    .item-actions .btn-edit i,
+    .item-actions .btn-danger i {
+        font-size: 0.9rem;
     }
 
     /* 시공 스케쥴 - 캘린더 모바일 최적화 */
