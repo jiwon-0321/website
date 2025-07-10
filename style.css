@@ -262,14 +262,25 @@ body {
     max-height: 600px;
 }
 
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
-    color: white;
-}
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+        margin-bottom: 0;
+    }
+    
+    .calendar-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: white;
+        margin: 0;
+        text-align: center;
+        flex: 1;
+    }
 
 /* 중복 정의 주석 처리
 .calendar-title {
@@ -596,25 +607,50 @@ body {
     
     .nav-tabs {
         flex-direction: row;
-        gap: 8px;
-        overflow-x: auto;
+        gap: 4px;
+        overflow: hidden; /* 좌우 스크롤 제거 */
         padding-bottom: 5px;
-        scrollbar-width: thin;
+        touch-action: manipulation;
+        justify-content: space-between;
+        -webkit-overflow-scrolling: none;
+        overscroll-behavior-x: none;
     }
     
     .tab-btn {
-        padding: 14px 16px;
-        font-size: 1rem;
-        min-height: 48px;
-        min-width: 110px;
-        flex-shrink: 0;
+        padding: 12px 8px;
+        font-size: 0.85rem;
+        min-height: 56px;
+        flex: 1;
         white-space: nowrap;
         margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        text-align: center;
+        max-width: 25%;
+        box-sizing: border-box;
     }
     
     .tab-btn i {
-        font-size: 1.2rem;
-        margin-right: 8px;
+        font-size: 1.3rem;
+        margin-right: 0;
+        margin-bottom: 2px;
+        display: block;
+    }
+    
+    .tab-btn .badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ff4444;
+        color: white;
+        border-radius: 10px;
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        min-width: 16px;
+        text-align: center;
     }
     
     .section-header {
@@ -855,21 +891,39 @@ body {
     }
     
     .tab-btn {
-        padding: 12px 14px;
+        padding: 10px 6px;
         flex-direction: column;
-        gap: 4px;
-        min-height: 48px;
-        min-width: 90px;
+        gap: 3px;
+        min-height: 52px;
+        flex: 1;
         margin-bottom: 10px;
+        max-width: 25%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.8rem;
     }
     
     .tab-btn i {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         margin-bottom: 2px;
+        margin-right: 0;
+        display: block;
     }
     
-    .tab-btn span:first-of-type {
-        font-size: 0.9rem;
+    .tab-btn .badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: #ff4444;
+        color: white;
+        border-radius: 8px;
+        padding: 1px 4px;
+        font-size: 0.6rem;
+        min-width: 14px;
+        text-align: center;
     }
     
     .section-title h2 {
@@ -5000,38 +5054,41 @@ form {
         padding: 10px;
         margin: 0 auto;
         max-width: 100%;
-        overflow-x: auto;
+        overflow: hidden; /* 좌우 스크롤 제거 */
+        touch-action: manipulation;
     }
     
     .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 2px;
-        min-width: 320px;
+        gap: 1px;
+        width: 100%;
         background-color: #f8f9fa;
         border-radius: 8px;
-        padding: 8px;
+        padding: 4px;
+        box-sizing: border-box;
     }
     
     .calendar-day {
         aspect-ratio: 1;
-        min-height: 40px;
-        padding: 4px;
+        min-height: 50px;
+        padding: 2px;
         border: 1px solid #e0e0e0;
         border-radius: 4px;
         background-color: white;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        font-size: 10px;
         cursor: pointer;
         transition: all 0.2s ease;
+        box-sizing: border-box;
+        overflow: hidden;
     }
     
     .calendar-day:hover {
         background-color: #f0f8ff;
-        transform: scale(1.05);
     }
     
     .calendar-day.today {
@@ -5045,19 +5102,49 @@ form {
         border-color: #4caf50;
     }
     
+    .day-number {
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 2px;
+        align-self: flex-start;
+    }
+    
+    .day-events {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+    
+    .calendar-event {
+        font-size: 6px;
+        padding: 1px 2px;
+        border-radius: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: #333;
+        color: white;
+        line-height: 1.2;
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
     .calendar-header {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 2px;
+        gap: 1px;
         margin-bottom: 8px;
         font-weight: bold;
-        font-size: 12px;
+        font-size: 10px;
         color: #666;
     }
     
     .calendar-header-day {
         text-align: center;
-        padding: 8px 4px;
+        padding: 4px 2px;
         background-color: #f5f5f5;
         border-radius: 4px;
     }
@@ -5246,12 +5333,18 @@ form {
         line-height: 1.5;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        touch-action: manipulation;
+        overscroll-behavior-x: none;
+        -webkit-overflow-scrolling: none;
     }
     
     .container {
         padding: 0 10px;
         max-width: 100%;
         margin: 0 auto;
+        touch-action: manipulation;
+        overscroll-behavior-x: none;
+        -webkit-overflow-scrolling: none;
     }
     
     /* 터치 최적화 */
