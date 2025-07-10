@@ -1293,9 +1293,6 @@ function renderBudgets() {
         const noteHighlighted = budget.note ? 
             highlightText(budget.note, searchFilters.budget.text) : '';
         
-        // 사용금액이 0이고 예상금액만 있는 경우 예상 사용 금액 표시
-        const isEstimatedOnly = budget.used === 0 && budget.estimated > 0;
-        
         budgetElement.innerHTML = `
             <div class="item-header">
                 <h3 class="item-title">${categoryHighlighted}</h3>
@@ -1311,7 +1308,6 @@ function renderBudgets() {
             <div class="item-meta">
                 <span><i class="fas fa-calculator"></i> 예상 금액: ${formatCurrency(budget.estimated || 0)}</span>
                 <span><i class="fas fa-credit-card"></i> 사용 금액: ${formatCurrency(budget.used)}</span>
-                ${isEstimatedOnly ? `<div class="estimated-usage"><i class="fas fa-chart-line"></i> 예상 사용 금액: ${formatCurrency(budget.estimated)}</div>` : ''}
             </div>
             ${noteHighlighted ? `<div class="item-description"><i class="fas fa-sticky-note"></i> ${noteHighlighted}</div>` : ''}
         `;
