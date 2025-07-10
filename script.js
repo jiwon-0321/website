@@ -19,175 +19,6 @@ const storageRef = storage.ref();
 storage.maxOperationRetryTime = 30000; // 30초 재시도
 storage.maxUploadRetryTime = 30000;
 
-// Firebase Storage 연결 테스트
-async function testStorageConnection() {
-    try {
-        // Storage 참조 생성 테스트
-        const storageRef = storage.ref();
-        console.log('Firebase Storage 연결 성공');
-        return true;
-    } catch (error) {
-        console.error('Firebase Storage 연결 오류:', error);
-        return false;
-    }
-}
-
-// Firebase Database 연결 테스트
-async function testDatabaseConnection() {
-    try {
-        const testRef = database.ref('test-connection');
-        await testRef.set(Date.now());
-        await testRef.remove();
-        console.log('Firebase Database 연결 성공');
-        return true;
-    } catch (error) {
-        console.error('Firebase Database 연결 오류:', error);
-        return false;
-    }
-}
-
-// 전체 Firebase 연결 테스트
-async function testFirebaseConnections() {
-    console.log('=== Firebase 연결 테스트 시작 ===');
-    
-    const storageOK = await testStorageConnection();
-    const databaseOK = await testDatabaseConnection();
-    
-    console.log('Firebase Storage:', storageOK ? '✅ 연결됨' : '❌ 연결 실패');
-    console.log('Firebase Database:', databaseOK ? '✅ 연결됨' : '❌ 연결 실패');
-    
-    if (storageOK && databaseOK) {
-        console.log('✅ 모든 Firebase 서비스 연결 성공');
-        showNotification('Firebase 연결 상태: 정상', 'success');
-        return true;
-    } else {
-        console.log('❌ 일부 Firebase 서비스 연결 실패');
-        showNotification('Firebase 연결 상태: 오류', 'error');
-        return false;
-    }
-}
-
-// 테스트용 이미지 생성 함수
-function createTestImage() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 300;
-    
-    const ctx = canvas.getContext('2d');
-    
-    // 배경 색상
-    ctx.fillStyle = '#e3f2fd';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // 테두리
-    ctx.strokeStyle = '#2196f3';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    
-    // 텍스트
-    ctx.fillStyle = '#1976d2';
-    ctx.font = 'bold 24px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('테스트 이미지', canvas.width / 2, canvas.height / 2 - 20);
-    
-    ctx.font = '16px Arial';
-    ctx.fillText('Firebase Storage 업로드 테스트', canvas.width / 2, canvas.height / 2 + 10);
-    
-    ctx.font = '12px Arial';
-    ctx.fillText(new Date().toLocaleString(), canvas.width / 2, canvas.height / 2 + 40);
-    
-    return canvas;
-}
-
-// 테스트 이미지 업로드 함수
-async function uploadTestImage(stepId = 1) {
-    try {
-        console.log(`🚀 === Step ${stepId}에 테스트 이미지 업로드 시작 ===`);
-        
-        // 1. Firebase 연결 상태 확인
-        console.log('1. Firebase 연결 상태 확인 중...');
-        const connectionsOK = await testFirebaseConnections();
-        if (!connectionsOK) {
-            throw new Error('Firebase 연결에 문제가 있습니다');
-        }
-        
-        // 2. 테스트 이미지 생성
-        console.log('2. 테스트 이미지 생성 중...');
-        const canvas = createTestImage();
-        
-        // Canvas를 Blob으로 변환
-        const blob = await new Promise(resolve => {
-            canvas.toBlob(resolve, 'image/png');
-        });
-        
-        // File 객체 생성
-        const file = new File([blob], 'test-image.png', { type: 'image/png' });
-        console.log('테스트 이미지 생성 완료:', file);
-        
-        // 3. 워크플로우 상태 확인
-        console.log('3. 워크플로우 상태 확인 중...');
-        const stepIndex = circularWorkflow.findIndex(s => s.id === stepId);
-        if (stepIndex === -1) {
-            throw new Error(`Step ${stepId}를 찾을 수 없습니다`);
-        }
-        
-        console.log('업로드 전 워크플로우 상태:', circularWorkflow[stepIndex]);
-        
-        // 4. images 배열이 없으면 초기화
-        if (!circularWorkflow[stepIndex].images) {
-            circularWorkflow[stepIndex].images = [];
-            console.log('images 배열 초기화 완료');
-        }
-        
-        // 5. 이미지 업로드 (Firebase Storage)
-        console.log('5. Firebase Storage에 이미지 업로드 중...');
-        const result = await uploadImage(file, stepId);
-        console.log('Firebase Storage 업로드 완료:', result);
-        
-        // 6. 워크플로우 배열에 추가
-        console.log('6. 워크플로우 배열에 이미지 추가 중...');
-        circularWorkflow[stepIndex].images.push(result);
-        console.log('워크플로우 배열 업데이트 완료:', circularWorkflow[stepIndex].images);
-        
-        // 7. Firebase Database에 저장
-        console.log('7. Firebase Database에 워크플로우 저장 중...');
-        await saveWorkflowToFirebase();
-        console.log('Firebase Database 저장 완료!');
-        
-        // 8. 화면 업데이트
-        console.log('8. 화면 업데이트 중...');
-        renderWorkflowImages(stepId);
-        
-        console.log('🎉 === 테스트 이미지 업로드 완료! ===');
-        showNotification('테스트 이미지 업로드 성공!', 'success');
-        
-        return result;
-        
-    } catch (error) {
-        console.error('❌ === 테스트 이미지 업로드 실패 ===');
-        console.error('오류 상세:', error);
-        console.error('오류 스택:', error.stack);
-        showNotification('테스트 이미지 업로드 실패: ' + error.message, 'error');
-        throw error;
-    }
-}
-
-// 강제로 워크플로우 저장 테스트
-async function forceFirebaseSave() {
-    try {
-        console.log('🔥 === 강제 Firebase 저장 테스트 ===');
-        console.log('현재 워크플로우:', JSON.stringify(circularWorkflow, null, 2));
-        
-        const result = await saveWorkflowToFirebase();
-        console.log('강제 저장 결과:', result);
-        
-        return result;
-    } catch (error) {
-        console.error('강제 저장 실패:', error);
-        throw error;
-    }
-}
-
 // 전역 변수들
 let schedules = [];
 let budgets = [];
@@ -212,7 +43,7 @@ function initializeWorkflowImages() {
             step.images = [];
         }
     });
-    console.log('워크플로우 이미지 필드 초기화 완료');
+
 }
 
 let currentEditingWorkflowStep = null;
@@ -467,24 +298,8 @@ async function deleteScheduleFromFirebase(scheduleId) {
 // Firebase에 워크플로우 저장
 async function saveWorkflowToFirebase() {
     try {
-        console.log('=== 워크플로우 Firebase 저장 시작 ===');
-        console.log('저장할 워크플로우 데이터:', JSON.stringify(circularWorkflow, null, 2));
-        
         const workflowRef = database.ref('workflow');
-        
-        // 1. 기존 데이터 확인
-        const snapshot = await workflowRef.once('value');
-        console.log('기존 Firebase 데이터:', snapshot.val());
-        
-        // 2. 새 데이터 저장
         await workflowRef.set(circularWorkflow);
-        console.log('Firebase set() 명령 완료');
-        
-        // 3. 저장 확인
-        const confirmSnapshot = await workflowRef.once('value');
-        console.log('저장 후 Firebase 데이터:', confirmSnapshot.val());
-        
-        console.log('=== 워크플로우 Firebase 저장 완료 ===');
         showNotification('워크플로우가 Firebase에 저장되었습니다.', 'success');
         
         return true;
@@ -512,7 +327,7 @@ function loadWorkflowFromFirebase() {
                 }
             });
             
-            console.log('Firebase에서 워크플로우 로드 완료:', circularWorkflow);
+
             
             renderTimelineWorkflow();
             updateOverallProgress();
@@ -520,7 +335,7 @@ function loadWorkflowFromFirebase() {
     }, (error) => {
         console.error('워크플로우 데이터 로드 중 오류:', error);
         // 오류 발생 시 기본 워크플로우 사용
-        console.log('기본 워크플로우를 사용합니다.');
+
     });
 }
 
@@ -677,7 +492,7 @@ function loadImportantFromFirebase() {
             renderImportantItems(importantItems);
         } else {
             // 기본 중요사항 데이터를 Firebase에 저장
-            console.log('기본 중요사항 데이터를 Firebase에 저장합니다...');
+            
             const defaultItems = [
                 {
                     title: '시공 시 계약 확인',
@@ -696,7 +511,7 @@ function loadImportantFromFirebase() {
                 for (const item of defaultItems) {
                     await importantRef.push(item);
                 }
-                console.log('기본 중요사항 데이터가 Firebase에 저장되었습니다.');
+                
             } catch (error) {
                 console.error('기본 중요사항 데이터 저장 중 오류:', error);
                 // 저장 실패시 렌더링만 수행
@@ -883,14 +698,14 @@ function checkFirebaseConnection() {
     const connectedRef = database.ref('.info/connected');
     connectedRef.on('value', (snapshot) => {
         if (snapshot.val() === true) {
-            console.log('Firebase에 연결되었습니다.');
+    
             // 연결 상태 표시 업데이트 (선택사항)
             const statusElement = document.querySelector('.connection-status');
             if (statusElement) {
                 statusElement.style.display = 'none';
             }
         } else {
-            console.log('Firebase 연결이 끊어졌습니다.');
+            
             showNotification('인터넷 연결을 확인하세요. 일부 기능이 제한될 수 있습니다.', 'error');
             // 연결 상태 표시 기능 비활성화
             // showConnectionStatus();
@@ -3244,13 +3059,7 @@ async function uploadImage(file, stepId) {
         
         const filename = `workflow_${stepId}_${timestamp}_${sanitizedName}`;
         
-        console.log('원본 파일명:', file.name);
-        console.log('정제된 파일명:', filename);
-        
         const fileRef = storage.ref(`workflow-images/${filename}`);
-        
-        console.log('Storage 참조 생성 완료:', fileRef.fullPath);
-        console.log('Storage 버킷:', fileRef.bucket);
         
         // 업로드 메타데이터 설정
         const metadata = {
@@ -3263,17 +3072,11 @@ async function uploadImage(file, stepId) {
             }
         };
         
-        console.log('메타데이터:', metadata);
-        
         // 이미지 업로드
-        console.log('파일 업로드 시작...');
         const snapshot = await fileRef.put(file, metadata);
-        console.log('✅ 이미지 업로드 완료:', snapshot.metadata);
         
         // 다운로드 URL 가져오기
-        console.log('다운로드 URL 가져오기...');
         const downloadURL = await snapshot.ref.getDownloadURL();
-        console.log('✅ 다운로드 URL 생성 완료:', downloadURL);
         
         return {
             url: downloadURL,
@@ -3397,8 +3200,6 @@ async function addWorkflowImage(stepId) {
                 circularWorkflow[stepIndex].images = [];
             }
             
-            console.log('이미지 업로드 전 워크플로우 상태:', circularWorkflow[stepIndex]);
-            
             for (const file of files) {
                 // 파일 크기 체크 (5MB 제한)
                 if (file.size > 5 * 1024 * 1024) {
@@ -3406,21 +3207,14 @@ async function addWorkflowImage(stepId) {
                     continue;
                 }
                 
-                console.log('파일 업로드 시작:', file.name);
                 const imageData = await uploadImage(file, stepId);
-                console.log('파일 업로드 완료, 배열에 추가:', imageData);
-                
                 circularWorkflow[stepIndex].images.push(imageData);
-                console.log('현재 이미지 배열:', circularWorkflow[stepIndex].images);
             }
             
             // 이미지 목록 업데이트
             renderWorkflowImages(stepId);
             
-            console.log('Firebase 저장 전 전체 워크플로우:', JSON.stringify(circularWorkflow, null, 2));
-            
             // Firebase에 저장 - 확실히 저장되도록 강제 (재시도 로직 포함)
-            console.log('Firebase에 워크플로우 저장 시작...');
             let saveSuccess = false;
             let retryCount = 0;
             const maxRetries = 3;
@@ -3429,12 +3223,10 @@ async function addWorkflowImage(stepId) {
                 try {
                     await saveWorkflowToFirebase();
                     saveSuccess = true;
-                    console.log(`Firebase에 워크플로우 저장 완료! (시도 ${retryCount + 1}/${maxRetries})`);
                 } catch (error) {
                     retryCount++;
                     console.error(`Firebase 저장 실패 (시도 ${retryCount}/${maxRetries}):`, error);
                     if (retryCount < maxRetries) {
-                        console.log(`${retryCount + 1}초 후 재시도...`);
                         await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
                     } else {
                         throw error;

@@ -5030,21 +5030,7 @@ form {
         -ms-overflow-style: none;
     }
     
-    .nav-tabs::-webkit-scrollbar {
-        display: none;
-    }
-    
-    /* 알림 최적화 */
-    .notification {
-        bottom: 20px;
-        right: 20px;
-        left: 20px;
-        width: auto;
-        margin: 0;
-        border-radius: 12px;
-        padding: 16px 20px;
-        font-size: 1rem;
-    }
+
     
     /* 중요사항 아이콘 선택기 최적화 */
     .icon-selector {
@@ -5207,14 +5193,7 @@ form {
         border-width: 2px;
     }
     
-    /* 알림 메시지 최적화 */
-    .notification {
-        bottom: 16px;
-        right: 16px;
-        left: 16px;
-        padding: 14px 16px;
-        font-size: 0.95rem;
-    }
+
     
     /* 체크박스 크기 조정 */
     .checkbox-label input[type="checkbox"] {
@@ -5568,9 +5547,7 @@ form {
         -ms-overflow-style: none;
     }
     
-    .nav-tabs::-webkit-scrollbar {
-        display: none;
-    }
+
     
     /* 입력 필드 모바일 최적화 */
     input, textarea, select {
@@ -5594,23 +5571,3 @@ form {
     }
 } 
 
-/* === Notification Size Adjustments (User-requested) === */
-.notification {
-    /* 더 작은 알림 크기 */
-    min-width: 180px;
-    max-width: 260px;
-    border-radius: 8px;
-}
-
-.notification-content {
-    padding: 10px 14px;
-    font-size: 0.85rem;
-}
-
-@media (max-width: 480px) {
-    .notification {
-        /* 모바일 화면에서도 너무 크지 않도록 */
-        left: auto;
-        right: 10px;
-    }
-}

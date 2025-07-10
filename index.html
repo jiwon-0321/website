@@ -44,13 +44,6 @@
                 <span>메모</span>
                 <span class="tab-count" id="memoCount">1</span>
             </button>
-            <!-- 중요사항 탭 삭제 -->
-            <!--
-            <button class="tab-btn" data-tab="important">
-                <i class="fas fa-exclamation-triangle"></i> 
-                <span>중요사항</span>
-            </button>
-            -->
         </nav>
 
         <!-- 시공 스케쥴 관리 섹션 -->
@@ -382,24 +375,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- 중요사항 관리 섹션 삭제 -->
-        <!--
-        <section id="important" class="content-section">
-            <div class="section-header">
-                <div class="section-title">
-                    <h2>중요사항</h2>
-                </div>
-                <button class="btn-primary" id="addImportantBtn">
-                    <i class="fas fa-plus"></i> 중요사항 추가
-                </button>
-            </div>
-            <div class="important-container">
-                <div class="important-list">
-                    <!-- 중요사항 항목들이 여기에 동적으로 생성됩니다 -->
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- 스케줄 추가/수정 모달 -->
@@ -576,63 +551,6 @@
                     <button class="btn-danger" id="deleteFromDetail">
                         <i class="fas fa-trash"></i> 삭제
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 중요사항 모달 삭제 -->
-    <!--
-    <div id="importantModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>중요사항 관리</h3>
-                <span class="close" id="closeImportantModal">&times;</span>
-            </div>
-            <form id="importantForm">
-                <div class="form-group">
-                    <label for="importantTitle">제목</label>
-                    <input type="text" id="importantTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="importantContent">내용</label>
-                    <textarea id="importantContent" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="importantIcon">아이콘</label>
-                    <select id="importantIcon">
-                        <option value="comment-dots">대화</option>
-                        <option value="trash-alt">쓰레기통</option>
-                        <option value="exclamation-circle">경고</option>
-                        <option value="info-circle">정보</option>
-                        <option value="check-circle">체크</option>
-                        <option value="clock">시계</option>
-                        <option value="phone">전화</option>
-                        <option value="envelope">메일</option>
-                        <option value="dollar-sign">달러</option>
-                        <option value="tools">도구</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">저장</button>
-                    <button type="button" class="btn-secondary" id="cancelImportant">취소</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 사용자 정의 확인 모달 -->
-    <div id="confirmModal" class="confirm-modal">
-        <div class="confirm-modal-content">
-            <div class="confirm-modal-header">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>확인</h3>
-            </div>
-            <div class="confirm-modal-body">
-                <p id="confirmMessage">정말로 이 작업을 실행하시겠습니까?</p>
-                <div class="confirm-modal-actions">
-                    <button class="btn-cancel" id="confirmCancel">취소</button>
-                    <button class="btn-confirm" id="confirmOk">확인</button>
                 </div>
             </div>
         </div>
