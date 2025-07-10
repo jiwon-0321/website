@@ -12,6 +12,7 @@ const firebaseConfig = {
 // Firebase 초기화 (compat 버전)
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+const storage = firebase.storage();
 
 // 전역 변수들
 let schedules = [];
@@ -20,14 +21,14 @@ let memos = [];
 
 // 원형 워크플로우 데이터 구조
 let circularWorkflow = [
-    { id: 1, name: "샤시", icon: "window-maximize", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 2, name: "전기", icon: "bolt", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 3, name: "문", icon: "door-open", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 4, name: "타일", icon: "th-large", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 5, name: "목공", icon: "hammer", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 6, name: "마감재", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 7, name: "전기마감", icon: "lightbulb", status: "pending", progress: 0, details: "", contractors: [] },
-    { id: 8, name: "청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [] }
+    { id: 1, name: "샤시", icon: "window-maximize", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 2, name: "전기", icon: "bolt", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 3, name: "문", icon: "door-open", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 4, name: "타일", icon: "th-large", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 5, name: "목공", icon: "hammer", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 6, name: "마감재", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 7, name: "전기마감", icon: "lightbulb", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 8, name: "청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [], images: [] }
 ];
 
 let currentEditingWorkflowStep = null;
@@ -1670,6 +1671,24 @@ function openWorkflowStepModal(step) {
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- 이미지 업로드 섹션 -->
+                    <div class="step-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-images"></i>
+                            </div>
+                            <h3>시공 이미지</h3>
+                            <button type="button" class="btn-add-image" onclick="addWorkflowImage(${step.id})">
+                                <i class="fas fa-plus"></i> 업로드
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div id="images-${step.id}" class="images-container">
+                                ${step.images && step.images.length > 0 ? step.images.map((imageData, index) => createImagePreview(imageData, step.id, index)).join('') : '<p class="no-images">업로드된 이미지가 없습니다.</p>'}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer step-modal-footer">
                     <button type="button" class="btn-secondary btn-cancel" onclick="closeWorkflowStepModal()">
@@ -1695,6 +1714,9 @@ function openWorkflowStepModal(step) {
     
     // 상태 배지 클릭 이벤트 설정
     setupStatusBadges();
+    
+    // 이미지 목록 렌더링
+    renderWorkflowImages(step.id);
 }
 
 function setupStatusBadges() {
@@ -2977,4 +2999,196 @@ function updateTimelineStats() {
     if (completedElement) completedElement.textContent = completedSteps;
     if (inProgressElement) inProgressElement.textContent = inProgressSteps;
     if (pendingElement) pendingElement.textContent = pendingSteps;
+}
+
+// === 이미지 업로드 관련 함수들 ===
+
+// 이미지 업로드 함수
+async function uploadImage(file, stepId) {
+    try {
+        const timestamp = Date.now();
+        const filename = `workflow_${stepId}_${timestamp}_${file.name}`;
+        const storageRef = storage.ref(`workflow-images/${filename}`);
+        
+        // 이미지 업로드
+        const snapshot = await storageRef.put(file);
+        const downloadURL = await snapshot.ref.getDownloadURL();
+        
+        return {
+            url: downloadURL,
+            filename: filename,
+            originalName: file.name,
+            uploadedAt: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('이미지 업로드 중 오류:', error);
+        throw error;
+    }
+}
+
+// 이미지 삭제 함수
+async function deleteImage(imageData) {
+    try {
+        const storageRef = storage.ref(`workflow-images/${imageData.filename}`);
+        await storageRef.delete();
+        return true;
+    } catch (error) {
+        console.error('이미지 삭제 중 오류:', error);
+        return false;
+    }
+}
+
+// 이미지 미리보기 생성 함수
+function createImagePreview(imageData, stepId, imageIndex) {
+    return `
+        <div class="image-preview" data-step-id="${stepId}" data-image-index="${imageIndex}">
+            <img src="${imageData.url}" alt="${imageData.originalName}" onclick="openImageModal('${imageData.url}', '${imageData.originalName}')">
+            <div class="image-overlay">
+                <div class="image-actions">
+                    <button type="button" class="btn-image-delete" onclick="removeWorkflowImage(${stepId}, ${imageIndex})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="image-info">
+                <span class="image-name">${imageData.originalName}</span>
+                <span class="image-date">${formatDate(imageData.uploadedAt)}</span>
+            </div>
+        </div>
+    `;
+}
+
+// 이미지 모달 열기 함수
+function openImageModal(imageUrl, imageName) {
+    const modalHTML = `
+        <div id="imageModal" class="modal image-modal">
+            <div class="modal-content image-modal-content">
+                <div class="modal-header">
+                    <h3>${imageName}</h3>
+                    <span class="close" onclick="closeImageModal()">&times;</span>
+                </div>
+                <div class="modal-body image-modal-body">
+                    <img src="${imageUrl}" alt="${imageName}" class="modal-image">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary" onclick="window.open('${imageUrl}', '_blank')">
+                        <i class="fas fa-external-link-alt"></i> 원본 크기로 보기
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 기존 모달 제거
+    const existingModal = document.getElementById('imageModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.getElementById('imageModal').style.display = 'flex';
+}
+
+// 이미지 모달 닫기 함수
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// 워크플로우 이미지 추가 함수
+async function addWorkflowImage(stepId) {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.multiple = true;
+    
+    fileInput.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+        
+        const stepIndex = circularWorkflow.findIndex(s => s.id === stepId);
+        if (stepIndex === -1) return;
+        
+        try {
+            // 로딩 표시
+            showNotification('이미지 업로드 중...', 'info');
+            
+            for (const file of files) {
+                // 파일 크기 체크 (5MB 제한)
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification(`${file.name}은 5MB를 초과합니다.`, 'warning');
+                    continue;
+                }
+                
+                const imageData = await uploadImage(file, stepId);
+                circularWorkflow[stepIndex].images.push(imageData);
+            }
+            
+            // 이미지 목록 업데이트
+            renderWorkflowImages(stepId);
+            
+            // Firebase에 저장
+            await saveWorkflowToFirebase();
+            
+            showNotification('이미지가 성공적으로 업로드되었습니다.', 'success');
+        } catch (error) {
+            console.error('이미지 업로드 중 오류:', error);
+            showNotification('이미지 업로드 중 오류가 발생했습니다.', 'error');
+        }
+    };
+    
+    fileInput.click();
+}
+
+// 워크플로우 이미지 삭제 함수
+async function removeWorkflowImage(stepId, imageIndex) {
+    const stepIndex = circularWorkflow.findIndex(s => s.id === stepId);
+    if (stepIndex === -1) return;
+    
+    const imageData = circularWorkflow[stepIndex].images[imageIndex];
+    if (!imageData) return;
+    
+    const confirmed = await customConfirm('이 이미지를 삭제하시겠습니까?');
+    if (!confirmed) return;
+    
+    try {
+        // Firebase Storage에서 이미지 삭제
+        await deleteImage(imageData);
+        
+        // 배열에서 이미지 제거
+        circularWorkflow[stepIndex].images.splice(imageIndex, 1);
+        
+        // 이미지 목록 업데이트
+        renderWorkflowImages(stepId);
+        
+        // Firebase에 저장
+        await saveWorkflowToFirebase();
+        
+        showNotification('이미지가 삭제되었습니다.', 'success');
+    } catch (error) {
+        console.error('이미지 삭제 중 오류:', error);
+        showNotification('이미지 삭제 중 오류가 발생했습니다.', 'error');
+    }
+}
+
+// 워크플로우 이미지 목록 렌더링 함수
+function renderWorkflowImages(stepId) {
+    const stepIndex = circularWorkflow.findIndex(s => s.id === stepId);
+    if (stepIndex === -1) return;
+    
+    const step = circularWorkflow[stepIndex];
+    const imagesContainer = document.getElementById(`images-${stepId}`);
+    
+    if (!imagesContainer) return;
+    
+    if (!step.images || step.images.length === 0) {
+        imagesContainer.innerHTML = '<p class="no-images">업로드된 이미지가 없습니다.</p>';
+        return;
+    }
+    
+    imagesContainer.innerHTML = step.images.map((imageData, index) => 
+        createImagePreview(imageData, stepId, index)
+    ).join('');
 } 

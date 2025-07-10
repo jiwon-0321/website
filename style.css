@@ -333,7 +333,7 @@ body {
 .calendar-day {
     background: white;
     padding: 8px;
-    min-height: 60px;
+    min-height: 45px;
     display: flex;
     flex-direction: column;
     cursor: pointer;
@@ -752,7 +752,7 @@ body {
     }
     
     .calendar-day {
-        min-height: 80px;
+        min-height: 55px;
         padding: 6px;
         font-size: 0.8rem;
         background: white;
@@ -2227,6 +2227,201 @@ form {
 /* 일정 상세보기 모달 */
 .schedule-detail-content {
     padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(90vh - 140px); /* 헤더 높이 제외 */
+}
+
+/* === 이미지 업로드 스타일 === */
+
+/* 이미지 업로드 버튼 */
+.btn-add-image {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-add-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* 이미지 컨테이너 */
+.images-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+/* 이미지 미리보기 */
+.image-preview {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.image-preview:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-preview:hover img {
+    transform: scale(1.05);
+}
+
+/* 이미지 오버레이 */
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent, rgba(0, 0, 0, 0.7));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 12px;
+}
+
+.image-preview:hover .image-overlay {
+    opacity: 1;
+}
+
+/* 이미지 액션 버튼 */
+.image-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-image-delete {
+    background: rgba(255, 59, 48, 0.9);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-image-delete:hover {
+    background: rgba(255, 59, 48, 1);
+    transform: scale(1.1);
+}
+
+/* 이미지 정보 */
+.image-info {
+    padding: 12px;
+    background: white;
+}
+
+.image-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.image-date {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 이미지 없음 상태 */
+.no-images {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #ddd;
+}
+
+/* 이미지 모달 스타일 */
+.image-modal {
+    z-index: 2000;
+}
+
+.image-modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+}
+
+.image-modal-body {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+}
+
+.modal-image {
+    max-width: 100%;
+    max-height: 70vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+    .images-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+    
+    .image-preview img {
+        height: 120px;
+    }
+    
+    .image-info {
+        padding: 8px;
+    }
+    
+    .image-name {
+        font-size: 12px;
+    }
+    
+    .image-date {
+        font-size: 10px;
+    }
+    
+    .btn-add-image {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
 .detail-item {
@@ -5398,3 +5593,24 @@ form {
         border-radius: 8px;
     }
 } 
+
+/* === Notification Size Adjustments (User-requested) === */
+.notification {
+    /* 더 작은 알림 크기 */
+    min-width: 180px;
+    max-width: 260px;
+    border-radius: 8px;
+}
+
+.notification-content {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+    .notification {
+        /* 모바일 화면에서도 너무 크지 않도록 */
+        left: auto;
+        right: 10px;
+    }
+}
