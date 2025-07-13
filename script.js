@@ -161,21 +161,45 @@ let searchFilters = {
 
 // 초기화 함수
 function init() {
-    loadData();
-    setupEventListeners();
-    renderAll();
-    
-    // Firebase에서 데이터 로드
-    loadSchedulesFromFirebase();
-    loadWorkflowFromFirebase();
-    checkFirebaseConnection();
-    testStorageConnection();
-    
-    // 워크플로우 이미지 필드 초기화
-    initializeWorkflowImages();
-    
-    // 사용자 정의 확인 모달 이벤트 설정
-    setupCustomConfirmModal();
+    try {
+        // Firebase 초기화 및 연결 확인
+        if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+        }
+        
+        // 연결 상태 확인
+        checkFirebaseConnection();
+        
+        // 데이터 로드
+        loadSchedulesFromFirebase();
+        loadBudgetsFromFirebase();
+        loadMemosFromFirebase();
+        loadImportantFromFirebase();
+        loadWorkflowFromFirebase();
+        
+        // 이벤트 리스너 설정
+        setupEventListeners();
+        
+        // 초기 렌더링
+        renderAll();
+        
+        // 워크플로우 이미지 초기화
+        initializeWorkflowImages();
+        
+    } catch (error) {
+        console.error('Firebase 초기화 오류:', error);
+        showNotification('Firebase 연결에 실패했습니다. 로컬 모드로 동작합니다.', 'warning');
+        
+        // Firebase 실패 시 로컬 스토리지에서 데이터 로드
+        loadMemosFromLocalStorage();
+        
+        // 이벤트 리스너 설정
+        setupEventListeners();
+        
+        // 초기 렌더링
+        renderAll();
+    }
 }
 
 // 사용자 정의 확인 모달 함수
@@ -406,21 +430,55 @@ async function deleteBudgetFromFirebase(budgetId) {
 function loadMemosFromFirebase() {
     const memosRef = database.ref('memos');
     memosRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        memos = [];
-        if (data) {
-            Object.keys(data).forEach(key => {
+        try {
+            memos = [];
+            snapshot.forEach(childSnapshot => {
                 memos.push({
-                    id: key,
-                    ...data[key]
+                    id: childSnapshot.key,
+                    ...childSnapshot.val()
                 });
             });
+            renderMemos();
+        } catch (error) {
+            console.error('메모 데이터 로드 중 오류:', error);
+            showNotification('메모 데이터를 불러오는 중 오류가 발생했습니다.', 'error');
+            // Firebase 실패 시 로컬 스토리지에서 로드
+            loadMemosFromLocalStorage();
         }
-        renderMemos();
-    }, (error) => {
-        console.error('메모 데이터 로드 중 오류:', error);
-        showNotification('메모 데이터를 불러오는 중 오류가 발생했습니다.', 'error');
     });
+}
+
+// 로컬 스토리지에서 메모 로드
+function loadMemosFromLocalStorage() {
+    try {
+        const storedMemos = localStorage.getItem('memos');
+        if (storedMemos) {
+            memos = JSON.parse(storedMemos);
+            renderMemos();
+        } else {
+            // 샘플 데이터 추가
+            memos.push({
+                id: 'sample-memo-1',
+                title: '테스트 메모',
+                content: '이것은 테스트 메모입니다. 삭제 버튼을 클릭해서 삭제할 수 있습니다.',
+                completed: false,
+                createdAt: new Date().toISOString()
+            });
+            saveMemosToLocalStorage();
+            renderMemos();
+        }
+    } catch (error) {
+        console.error('로컬 스토리지에서 메모 로드 중 오류:', error);
+    }
+}
+
+// 로컬 스토리지에 메모 저장
+function saveMemosToLocalStorage() {
+    try {
+        localStorage.setItem('memos', JSON.stringify(memos));
+    } catch (error) {
+        console.error('로컬 스토리지에 메모 저장 중 오류:', error);
+    }
 }
 
 // Firebase에 메모 저장
@@ -1437,10 +1495,28 @@ async function toggleMemoCompleted(memoId, completed) {
 }
 
 async function deleteMemo(id) {
-    const confirmed = await customConfirm('정말로 이 메모를 삭제하시겠습니까?');
-    if (confirmed) {
-        // Firebase에서 삭제
-        await deleteMemoFromFirebase(id);
+    try {
+        console.log('삭제 버튼 클릭됨. 메모 ID:', id);
+        const confirmed = await customConfirm('정말로 이 메모를 삭제하시겠습니까?');
+        console.log('삭제 확인:', confirmed);
+        if (confirmed) {
+            // Firebase에서 삭제 시도
+            try {
+                console.log('Firebase에서 메모 삭제 시작');
+                await deleteMemoFromFirebase(id);
+                console.log('Firebase에서 메모 삭제 완료');
+            } catch (firebaseError) {
+                console.warn('Firebase 삭제 실패, 로컬 스토리지에서 삭제 시도:', firebaseError);
+                // Firebase 실패 시 로컬 스토리지에서 삭제
+                memos = memos.filter(memo => memo.id !== id);
+                saveMemosToLocalStorage();
+                renderMemos();
+                showNotification('메모가 성공적으로 삭제되었습니다.', 'success');
+            }
+        }
+    } catch (error) {
+        console.error('메모 삭제 중 오류:', error);
+        showNotification('메모 삭제 중 오류가 발생했습니다.', 'error');
     }
 }
 
@@ -2585,6 +2661,7 @@ function addSampleData() {
         title: '전기 작업 주의사항',
         content: '220V 콘센트 추가 설치 필요\n배선 점검 완료\n안전차단기 확인 필수',
         category: '중요',
+        completed: false,
         createdAt: new Date().toISOString()
     });
     
