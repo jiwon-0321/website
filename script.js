@@ -138,7 +138,12 @@ const elements = {
     memoForm: document.getElementById('memoForm'),
     memoList: document.getElementById('memoList'),
     closeMemoModal: document.getElementById('closeMemoModal'),
-    cancelMemo: document.getElementById('cancelMemo')
+    cancelMemo: document.getElementById('cancelMemo'),
+    detailEditTitle: document.getElementById('detailEditTitle'),
+    detailEditStartDate: document.getElementById('detailEditStartDate'),
+    detailEditEndDate: document.getElementById('detailEditEndDate'),
+    detailEditStatus: document.getElementById('detailEditStatus'),
+    detailEditDescription: document.getElementById('detailEditDescription')
 };
 
 // 검색 및 필터 상태
@@ -186,6 +191,13 @@ function customConfirm(message) {
         const confirmBtn = document.getElementById('confirmOk');
         const cancelBtn = document.getElementById('confirmCancel');
         
+        // 요소가 존재하지 않으면 기본 confirm 사용
+        if (!modal || !messageElement || !confirmBtn || !cancelBtn) {
+            console.warn('confirmModal 요소가 없습니다. 기본 confirm을 사용합니다.');
+            resolve(confirm(message));
+            return;
+        }
+        
         messageElement.textContent = message;
         modal.style.display = 'block';
         
@@ -214,6 +226,11 @@ function customConfirm(message) {
 // 사용자 정의 확인 모달 이벤트 설정
 function setupCustomConfirmModal() {
     const modal = document.getElementById('confirmModal');
+    
+    if (!modal) {
+        console.warn('confirmModal 요소가 없습니다.');
+        return;
+    }
     
     // 모달 외부 클릭 시 닫기
     modal.addEventListener('click', (e) => {
@@ -797,6 +814,17 @@ function setupEventListeners() {
     elements.editFromDetail.addEventListener('click', editScheduleFromDetail);
     elements.deleteFromDetail.addEventListener('click', deleteScheduleFromDetail);
     
+    // 일정 상세보기 편집 모드 관련
+    const saveFromDetailBtn = document.getElementById('saveFromDetail');
+    const cancelFromDetailBtn = document.getElementById('cancelFromDetail');
+    
+    if (saveFromDetailBtn) {
+        saveFromDetailBtn.addEventListener('click', saveScheduleFromDetail);
+    }
+    if (cancelFromDetailBtn) {
+        cancelFromDetailBtn.addEventListener('click', cancelScheduleEdit);
+    }
+    
     // 예산 관련
     elements.addBudgetBtn.addEventListener('click', () => openBudgetModal());
     elements.closeBudgetModal.addEventListener('click', closeBudgetModal);
@@ -1084,15 +1112,113 @@ function openScheduleDetailModal(schedule) {
 }
 
 function closeScheduleDetailModal() {
+    // 편집 모드가 활성화되어 있다면 상세보기 모드로 복원
+    const editMode = document.getElementById('scheduleDetailEditMode');
+    const viewMode = document.getElementById('scheduleDetailViewMode');
+    const modalTitle = document.getElementById('scheduleDetailModalTitle');
+    
+    if (editMode && editMode.style.display !== 'none') {
+        editMode.style.display = 'none';
+        viewMode.style.display = 'block';
+        modalTitle.textContent = '일정 상세보기';
+    }
+    
+    // 모달 닫기
     elements.scheduleDetailModal.style.display = 'none';
     selectedSchedule = null;
 }
 
 function editScheduleFromDetail() {
     if (selectedSchedule) {
-        closeScheduleDetailModal();
-        openScheduleModal(selectedSchedule);
+        // 모달 제목 변경
+        document.getElementById('scheduleDetailModalTitle').textContent = '일정 수정';
+        
+        // 상세보기 모드 숨기기
+        document.getElementById('scheduleDetailViewMode').style.display = 'none';
+        
+        // 편집 모드 표시
+        document.getElementById('scheduleDetailEditMode').style.display = 'block';
+        
+        // 편집 폼에 현재 데이터 설정
+        document.getElementById('detailEditTitle').value = selectedSchedule.title;
+        document.getElementById('detailEditStartDate').value = selectedSchedule.startDate;
+        document.getElementById('detailEditEndDate').value = selectedSchedule.endDate;
+        document.getElementById('detailEditStatus').value = selectedSchedule.status || 'pending';
+        document.getElementById('detailEditDescription').value = selectedSchedule.description || '';
     }
+}
+
+function cancelScheduleEdit() {
+    // 모달 제목 복원
+    document.getElementById('scheduleDetailModalTitle').textContent = '일정 상세보기';
+    
+    // 편집 모드 숨기기
+    document.getElementById('scheduleDetailEditMode').style.display = 'none';
+    
+    // 상세보기 모드 표시
+    document.getElementById('scheduleDetailViewMode').style.display = 'block';
+}
+
+async function saveScheduleFromDetail() {
+    if (!selectedSchedule) return;
+    
+    const title = document.getElementById('detailEditTitle').value.trim();
+    const startDate = document.getElementById('detailEditStartDate').value;
+    const endDate = document.getElementById('detailEditEndDate').value;
+    const status = document.getElementById('detailEditStatus').value;
+    const description = document.getElementById('detailEditDescription').value.trim();
+    
+    if (!title || !startDate || !endDate) {
+        showNotification('모든 필수 항목을 입력해주세요.', 'warning');
+        return;
+    }
+    
+    if (new Date(startDate) > new Date(endDate)) {
+        showNotification('시작일은 종료일보다 이전이어야 합니다.', 'warning');
+        return;
+    }
+    
+    const scheduleData = {
+        title,
+        startDate,
+        endDate,
+        status,
+        description
+    };
+    
+    try {
+        // Firebase에 저장
+        await saveScheduleToFirebase(scheduleData, selectedSchedule.id);
+        
+        // 선택된 일정 객체 업데이트
+        selectedSchedule = { ...selectedSchedule, ...scheduleData };
+        
+        // 상세보기 모드로 돌아가기
+        cancelScheduleEdit();
+        
+        // 상세보기 내용 업데이트
+        updateScheduleDetailView();
+        
+        showNotification('일정이 성공적으로 수정되었습니다.', 'success');
+        
+    } catch (error) {
+        console.error('일정 저장 중 오류:', error);
+        showNotification('일정 저장 중 오류가 발생했습니다.', 'error');
+    }
+}
+
+function updateScheduleDetailView() {
+    if (!selectedSchedule) return;
+    
+    document.getElementById('detailTitle').textContent = selectedSchedule.title;
+    document.getElementById('detailPeriod').textContent = `${formatDate(selectedSchedule.startDate)} ~ ${formatDate(selectedSchedule.endDate)}`;
+    document.getElementById('detailDuration').textContent = `${calculateDuration(selectedSchedule.startDate, selectedSchedule.endDate)}일`;
+    
+    const statusElement = document.getElementById('detailStatus');
+    statusElement.textContent = getStatusText(selectedSchedule.status);
+    statusElement.className = `status-badge ${selectedSchedule.status}`;
+    
+    document.getElementById('detailDescription').textContent = selectedSchedule.description || '설명이 없습니다.';
 }
 
 async function deleteScheduleFromDetail() {
@@ -2497,20 +2623,52 @@ function calculateDuration(startDate, endDate) {
 }
 
 function closeAllModals() {
-    elements.scheduleModal.style.display = 'none';
-    elements.budgetModal.style.display = 'none';
-    elements.workflowModal.style.display = 'none';
-    elements.memoModal.style.display = 'none';
-    elements.scheduleDetailModal.style.display = 'none';
+    // 정적 모달들 닫기
+    const modals = [
+        'scheduleModal',
+        'budgetModal', 
+        'workflowModal',
+        'memoModal',
+        'scheduleDetailModal',
+        'confirmModal'
+    ];
     
-    // 중요사항 모달 닫기
-    const importantModal = document.getElementById('importantModal');
-    if (importantModal) {
-        importantModal.style.display = 'none';
+    modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // 일정 상세보기 모달의 편집 모드 초기화
+    const scheduleDetailEditMode = document.getElementById('scheduleDetailEditMode');
+    const scheduleDetailViewMode = document.getElementById('scheduleDetailViewMode');
+    const scheduleDetailModalTitle = document.getElementById('scheduleDetailModalTitle');
+    
+    if (scheduleDetailEditMode && scheduleDetailEditMode.style.display !== 'none') {
+        scheduleDetailEditMode.style.display = 'none';
+        scheduleDetailViewMode.style.display = 'block';
+        scheduleDetailModalTitle.textContent = '일정 상세보기';
     }
     
+    // 동적으로 생성된 모달들 닫기
+    const dynamicModals = [
+        'workflowStepModal',
+        'workflowDetailsModal',
+        'contractorsModal',
+        'progressUpdateModal',
+        'imageModal'
+    ];
+    
+    dynamicModals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.remove(); // 동적 모달은 완전히 제거
+        }
+    });
+    
+    // 전역 변수 초기화
     currentEditingId = null;
-    currentEditingType = null;
     selectedSchedule = null;
 }
 

@@ -520,10 +520,12 @@
     <div id="scheduleDetailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>일정 상세보기</h3>
+                <h3 id="scheduleDetailModalTitle">일정 상세보기</h3>
                 <span class="close" id="closeScheduleDetailModal">&times;</span>
             </div>
-            <div class="schedule-detail-content">
+            
+            <!-- 상세보기 모드 -->
+            <div id="scheduleDetailViewMode" class="schedule-detail-content">
                 <div class="detail-item">
                     <label>작업명</label>
                     <p id="detailTitle"></p>
@@ -552,6 +554,63 @@
                         <i class="fas fa-trash"></i> 삭제
                     </button>
                 </div>
+            </div>
+            
+            <!-- 편집 모드 -->
+            <div id="scheduleDetailEditMode" class="schedule-detail-content" style="display: none;">
+                <div class="form-group">
+                    <label for="detailEditTitle">작업명</label>
+                    <input type="text" id="detailEditTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="detailEditStartDate">시작일</label>
+                    <input type="date" id="detailEditStartDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="detailEditEndDate">종료일</label>
+                    <input type="date" id="detailEditEndDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="detailEditStatus">상태</label>
+                    <select id="detailEditStatus" class="form-control">
+                        <option value="pending">대기</option>
+                        <option value="in-progress">진행중</option>
+                        <option value="completed">완료</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="detailEditDescription">설명</label>
+                    <textarea id="detailEditDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn-primary" id="saveFromDetail">
+                        <i class="fas fa-save"></i> 저장
+                    </button>
+                    <button class="btn-cancel" id="cancelFromDetail">
+                        <i class="fas fa-times"></i> 취소
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 확인 모달 -->
+    <div id="confirmModal" class="modal confirm-modal">
+        <div class="modal-content confirm-modal-content">
+            <div class="modal-header confirm-modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>확인</h3>
+            </div>
+            <div class="confirm-modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="confirm-modal-actions">
+                <button class="btn-cancel" id="confirmCancel">
+                    <i class="fas fa-times"></i> 취소
+                </button>
+                <button class="btn-confirm" id="confirmOk">
+                    <i class="fas fa-check"></i> 확인
+                </button>
             </div>
         </div>
     </div>
