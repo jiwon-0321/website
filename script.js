@@ -166,21 +166,39 @@ let searchFilters = {
 
 // 초기화 함수
 function init() {
-    loadData();
-    setupEventListeners();
-    renderAll();
-    
-    // Firebase에서 데이터 로드
-    loadSchedulesFromFirebase();
-    loadWorkflowFromFirebase();
-    checkFirebaseConnection();
-    testStorageConnection();
-    
-    // 워크플로우 이미지 필드 초기화
-    initializeWorkflowImages();
-    
-    // 사용자 정의 확인 모달 이벤트 설정
-    setupCustomConfirmModal();
+    try {
+        // Firebase 초기화 및 연결 확인
+        if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+        }
+        
+        // 연결 상태 확인
+        checkFirebaseConnection();
+        
+        // 데이터 로드
+        loadSchedulesFromFirebase();
+        loadBudgetsFromFirebase();
+        loadMemosFromFirebase();
+        loadImportantFromFirebase();
+        loadWorkflowFromFirebase();
+        
+        // 이벤트 리스너 설정
+        setupEventListeners();
+        
+        // 초기 렌더링
+        renderAll();
+        
+        // 워크플로우 이미지 초기화
+        initializeWorkflowImages();
+        
+        // 사용자 정의 확인 모달 설정
+        setupCustomConfirmModal();
+        
+    } catch (error) {
+        console.error('Firebase 초기화 오류:', error);
+        showNotification('Firebase 연결에 실패했습니다. 페이지를 새로고침해주세요.', 'error');
+    }
 }
 
 // 사용자 정의 확인 모달 함수
@@ -423,22 +441,23 @@ async function deleteBudgetFromFirebase(budgetId) {
 function loadMemosFromFirebase() {
     const memosRef = database.ref('memos');
     memosRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        memos = [];
-        if (data) {
-            Object.keys(data).forEach(key => {
+        try {
+            memos = [];
+            snapshot.forEach(childSnapshot => {
                 memos.push({
-                    id: key,
-                    ...data[key]
+                    id: childSnapshot.key,
+                    ...childSnapshot.val()
                 });
             });
+            renderMemos();
+        } catch (error) {
+            console.error('메모 데이터 로드 중 오류:', error);
+            showNotification('메모 데이터를 불러오는 중 오류가 발생했습니다.', 'error');
         }
-        renderMemos();
-    }, (error) => {
-        console.error('메모 데이터 로드 중 오류:', error);
-        showNotification('메모 데이터를 불러오는 중 오류가 발생했습니다.', 'error');
     });
 }
+
+
 
 // Firebase에 메모 저장
 async function saveMemoToFirebase(memoData, memoId = null) {
@@ -715,15 +734,13 @@ function checkFirebaseConnection() {
     const connectedRef = database.ref('.info/connected');
     connectedRef.on('value', (snapshot) => {
         if (snapshot.val() === true) {
-    
             // 연결 상태 표시 업데이트 (선택사항)
             const statusElement = document.querySelector('.connection-status');
             if (statusElement) {
                 statusElement.style.display = 'none';
             }
         } else {
-            
-            showNotification('인터넷 연결을 확인하세요. 일부 기능이 제한될 수 있습니다.', 'error');
+            showNotification('Firebase 연결이 끊어졌습니다. 메모 삭제 기능이 제한됩니다.', 'error');
             // 연결 상태 표시 기능 비활성화
             // showConnectionStatus();
         }
@@ -1536,37 +1553,82 @@ function closeMemoModal() {
 async function handleMemoSubmit(e) {
     e.preventDefault();
     
-    const memoData = {
-        title: document.getElementById('memoTitle').value,
-        content: document.getElementById('memoContent').value,
-        completed: document.getElementById('memoCompleted').checked,
-        createdAt: currentEditingId ? 
-            (memos.find(m => m.id === currentEditingId)?.createdAt || new Date().toISOString()) : 
-            new Date().toISOString()
-    };
-    
-    if (!memoData.content.trim()) {
-        showNotification('메모 내용을 입력해주세요.', 'warning');
-        return;
+    try {
+        // Firebase 연결 상태 확인
+        const connectedRef = database.ref('.info/connected');
+        const snapshot = await connectedRef.once('value');
+        
+        if (!snapshot.val()) {
+            showNotification('인터넷 연결을 확인하세요. Firebase에 연결할 수 없습니다.', 'error');
+            return;
+        }
+        
+        const memoData = {
+            title: document.getElementById('memoTitle').value,
+            content: document.getElementById('memoContent').value,
+            completed: document.getElementById('memoCompleted').checked,
+            createdAt: currentEditingId ? 
+                (memos.find(m => m.id === currentEditingId)?.createdAt || new Date().toISOString()) : 
+                new Date().toISOString()
+        };
+        
+        if (!memoData.content.trim()) {
+            showNotification('메모 내용을 입력해주세요.', 'warning');
+            return;
+        }
+        
+        // Firebase에 저장
+        await saveMemoToFirebase(memoData, currentEditingId);
+        
+        closeMemoModal();
+        
+    } catch (error) {
+        console.error('메모 저장 중 오류:', error);
+        showNotification('메모 저장 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
     }
-    
-    // Firebase에 저장
-    await saveMemoToFirebase(memoData, currentEditingId);
-    
-    closeMemoModal();
 }
 
 // 메모 완료 상태 토글
 async function toggleMemoCompleted(memoId, completed) {
-    // Firebase에서 업데이트
-    await updateMemoCompletedInFirebase(memoId, completed);
+    try {
+        // Firebase 연결 상태 확인
+        const connectedRef = database.ref('.info/connected');
+        const snapshot = await connectedRef.once('value');
+        
+        if (!snapshot.val()) {
+            showNotification('인터넷 연결을 확인하세요. Firebase에 연결할 수 없습니다.', 'error');
+            return;
+        }
+        
+        // Firebase에서 업데이트
+        await updateMemoCompletedInFirebase(memoId, completed);
+        
+    } catch (error) {
+        console.error('메모 상태 변경 중 오류:', error);
+        showNotification('메모 상태 변경 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
+    }
 }
 
 async function deleteMemo(id) {
-    const confirmed = await customConfirm('정말로 이 메모를 삭제하시겠습니까?');
-    if (confirmed) {
-        // Firebase에서 삭제
-        await deleteMemoFromFirebase(id);
+    try {
+        // Firebase 연결 상태 확인
+        const connectedRef = database.ref('.info/connected');
+        const snapshot = await connectedRef.once('value');
+        
+        if (!snapshot.val()) {
+            showNotification('인터넷 연결을 확인하세요. Firebase에 연결할 수 없습니다.', 'error');
+            return;
+        }
+        
+        const confirmed = await customConfirm('정말로 이 메모를 삭제하시겠습니까?');
+        
+        if (confirmed) {
+            // Firebase에서 삭제
+            await deleteMemoFromFirebase(id);
+        }
+    } catch (error) {
+        console.error('메모 삭제 중 오류:', error);
+        showNotification('메모 삭제 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
     }
 }
 
@@ -1618,7 +1680,8 @@ function renderMemos() {
                     <button class="btn-edit touch-friendly" onclick="openMemoModal(${JSON.stringify(memo).replace(/"/g, '&quot;')})">
                         <i class="fas fa-edit"></i> 수정
                     </button>
-                    <button class="btn-danger touch-friendly" onclick="deleteMemo('${memo.id}')">
+                    <button class="btn-danger touch-friendly" onclick="deleteMemo('${memo.id}')" 
+                            style="display: inline-block; opacity: 1; pointer-events: auto;">
                         <i class="fas fa-trash"></i> 삭제
                     </button>
                 </div>
@@ -2743,6 +2806,7 @@ function addSampleData() {
         title: '전기 작업 주의사항',
         content: '220V 콘센트 추가 설치 필요\n배선 점검 완료\n안전차단기 확인 필수',
         category: '중요',
+        completed: false,
         createdAt: new Date().toISOString()
     });
     
