@@ -28,13 +28,17 @@ let memos = [];
 let circularWorkflow = [
     { id: 1, name: "샤시", icon: "window-maximize", status: "pending", progress: 0, details: "", contractors: [], images: [] },
     { id: 2, name: "전기", icon: "bolt", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 3, name: "문", icon: "door-open", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 4, name: "타일", icon: "th-large", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 3, name: "문", icon: "door-closed", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 4, name: "바닥 수평", icon: "ruler-horizontal", status: "pending", progress: 0, details: "", contractors: [], images: [] },
     { id: 5, name: "목공", icon: "hammer", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 6, name: "마감재", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 7, name: "전기마감", icon: "lightbulb", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 8, name: "청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [], images: [] }
+    { id: 6, name: "타일", icon: "border-all", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 7, name: "벽지+바닥", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 8, name: "전기 마감", icon: "plug", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 9, name: "입주청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [], images: [] }
 ];
+
+// 기본 워크플로우 백업: Firebase 데이터 누락 시 병합/복구용
+const defaultCircularWorkflow = JSON.parse(JSON.stringify(circularWorkflow));
 
 // 워크플로우 이미지 필드 초기화 함수
 function initializeWorkflowImages() {
@@ -352,25 +356,45 @@ function loadWorkflowFromFirebase() {
     const workflowRef = database.ref('workflow');
     workflowRef.on('value', (snapshot) => {
         const data = snapshot.val();
-        if (data && Array.isArray(data) && data.length > 0) {
+        if (data && Array.isArray(data)) {
+            // Firebase 데이터 로드
             circularWorkflow = data;
-            
-            // 이미지 필드 초기화 (기존 데이터 호환성)
-            circularWorkflow.forEach(step => {
-                if (!step.images) {
-                    step.images = [];
+
+            // 기본 단계와 병합 (누락 항목 및 필드 보완)
+            defaultCircularWorkflow.forEach(defStep => {
+                const found = circularWorkflow.find(s => s && s.id === defStep.id);
+                if (!found) {
+                    // 누락된 단계 추가
+                    circularWorkflow.push({ ...defStep });
+                } else {
+                    // 필수 필드 누락 시 기본값으로 보완
+                    ['name', 'icon', 'status', 'progress', 'details', 'contractors', 'images'].forEach(key => {
+                        if (found[key] === undefined || found[key] === null) {
+                            found[key] = Array.isArray(defStep[key]) ? [...defStep[key]] : defStep[key];
+                        }
+                    });
                 }
             });
-            
 
-            
-            renderTimelineWorkflow();
-            updateOverallProgress();
+            // 이미지 필드 보장 및 정렬
+            circularWorkflow.forEach(step => {
+                if (!step.images) step.images = [];
+            });
+            circularWorkflow.sort((a, b) => a.id - b.id);
+        } else {
+            // Firebase 데이터가 없으면 기본 워크플로우 사용
+            circularWorkflow = JSON.parse(JSON.stringify(defaultCircularWorkflow));
         }
+
+        // UI 반영
+        renderTimelineWorkflow();
+        updateOverallProgress();
     }, (error) => {
         console.error('워크플로우 데이터 로드 중 오류:', error);
-        // 오류 발생 시 기본 워크플로우 사용
-
+        // 오류 시에도 기본 워크플로우로 복구
+        circularWorkflow = JSON.parse(JSON.stringify(defaultCircularWorkflow));
+        renderTimelineWorkflow();
+        updateOverallProgress();
     });
 }
 
@@ -1034,8 +1058,12 @@ function renderCalendar() {
         // 날짜 클릭 이벤트 (빈 날짜 클릭시 일정 추가)
         dayCell.addEventListener('click', (e) => {
             if (e.target === dayCell || e.target === dayNumber) {
-                const dateStr = formatDateForInput(cellDate);
-                openScheduleModal(null, dateStr);
+                if (daySchedules && daySchedules.length > 0) {
+                    openDaySchedulesModal(cellDate, daySchedules);
+                } else {
+                    const dateStr = formatDateForInput(cellDate);
+                    openScheduleModal(null, dateStr);
+                }
             }
         });
         
@@ -1088,6 +1116,7 @@ function createCalendarEvent(schedule, date) {
     // 이벤트 클릭시 상세보기 모달 열기 (스크롤 문제 해결)
     eventElement.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         // 스크롤 위치 기억
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         openScheduleDetailModal(schedule);
@@ -1380,6 +1409,8 @@ function renderSchedules() {
             // 일정 클릭 시 상세보기
             scheduleElement.addEventListener('click', (e) => {
                 if (!e.target.closest('button')) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     openScheduleDetailModal(schedule);
                 }
             });
@@ -1813,133 +1844,157 @@ function createConnectionPath(fromElement, toElement) {
 }
 
 function openWorkflowStepModal(step) {
-    currentEditingWorkflowStep = step;
-    
-    // 개선된 모달 HTML 구조
-    const modalHTML = `
-        <div id="workflowStepModal" class="modal">
-            <div class="modal-content step-modal-content">
-                <div class="modal-header step-modal-header">
-                    <div class="step-modal-title-section">
-                        <div class="step-modal-icon">
-                            <i class="fas fa-${step.icon}"></i>
+    try {
+        console.log('🔧 입주청소 관리 모달 열기 시도:', step.name);
+        
+        if (!step) {
+            console.error('❌ 단계 정보가 없습니다');
+            showNotification('단계 정보를 찾을 수 없습니다.', 'error');
+            return;
+        }
+        
+        currentEditingWorkflowStep = step;
+        
+        // 안전한 모달 HTML 구조 생성
+        const modalHTML = `
+            <div id="workflowStepModal" class="modal">
+                <div class="modal-content step-modal-content">
+                    <div class="modal-header step-modal-header">
+                        <div class="step-modal-title-section">
+                            <div class="step-modal-icon">
+                                <i class="fas fa-${step.icon}"></i>
+                            </div>
+                            <div class="step-modal-title-info">
+                                <h2>${step.name} 단계 관리</h2>
+                                <p>시공 단계별 세부 정보를 관리합니다</p>
+                            </div>
                         </div>
-                        <div class="step-modal-title-info">
-                            <h2>${step.name} 단계 관리</h2>
-                            <p>시공 단계별 세부 정보를 관리합니다</p>
-                        </div>
+                        <span class="close step-modal-close" onclick="closeWorkflowStepModal()">&times;</span>
                     </div>
-                    <span class="close step-modal-close" onclick="closeWorkflowStepModal()">&times;</span>
-                </div>
-                <div class="modal-body step-modal-body">
-                    <!-- 상태 관리 섹션 -->
-                    <div class="step-section">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <h3>진행 상태</h3>
-                        </div>
-                        <div class="section-content">
-                            <div class="status-badges">
-                                <div class="status-badge-item ${step.status === 'pending' ? 'active' : ''}" data-status="pending">
-                                    <span class="status-icon">🕐</span>
-                                    <span class="status-text">대기중</span>
+                    <div class="modal-body step-modal-body">
+                        <!-- 상태 관리 섹션 -->
+                        <div class="step-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-tasks"></i>
                                 </div>
-                                <div class="status-badge-item ${step.status === 'in-progress' ? 'active' : ''}" data-status="in-progress">
-                                    <span class="status-icon">▶️</span>
-                                    <span class="status-text">진행중</span>
-                                </div>
-                                <div class="status-badge-item ${step.status === 'completed' ? 'active' : ''}" data-status="completed">
-                                    <span class="status-icon">✅</span>
-                                    <span class="status-text">완료</span>
-                                </div>
+                                <h3>진행 상태</h3>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 세부 내용 섹션 -->
-                    <div class="step-section">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <h3>세부 내용</h3>
-                        </div>
-                        <div class="section-content">
-                            <div class="details-input-container">
-                                <textarea id="stepDetails" class="details-textarea" rows="4" placeholder="${step.name} 시공의 세부 내용을 상세히 입력해주세요...">${step.details || ''}</textarea>
-                                <div class="textarea-info">
-                                    <i class="fas fa-info-circle"></i>
-                                    시공 과정, 주의사항, 필요한 자재 등을 기록하세요
+                            <div class="section-content">
+                                <div class="status-badges">
+                                    <div class="status-badge-item ${step.status === 'pending' ? 'active' : ''}" data-status="pending">
+                                        <span class="status-icon">🕐</span>
+                                        <span class="status-text">대기중</span>
+                                    </div>
+                                    <div class="status-badge-item ${step.status === 'in-progress' ? 'active' : ''}" data-status="in-progress">
+                                        <span class="status-icon">▶️</span>
+                                        <span class="status-text">진행중</span>
+                                    </div>
+                                    <div class="status-badge-item ${step.status === 'completed' ? 'active' : ''}" data-status="completed">
+                                        <span class="status-icon">✅</span>
+                                        <span class="status-text">완료</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- 세부 내용 섹션 -->
+                        <div class="step-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <h3>세부 내용</h3>
+                            </div>
+                            <div class="section-content">
+                                <div class="details-input-container">
+                                    <textarea id="stepDetails" class="details-textarea" rows="4" placeholder="${step.name} 시공의 세부 내용을 상세히 입력해주세요...">${step.details || ''}</textarea>
+                                    <div class="textarea-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        시공 과정, 주의사항, 필요한 자재 등을 기록하세요
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 업체 관리 섹션 -->
+                        <div class="step-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3>업체 관리</h3>
+                                <button type="button" class="btn-add-contractor" onclick="addContractor()">
+                                    <i class="fas fa-plus"></i> 추가
+                                </button>
+                            </div>
+                            <div class="section-content">
+                                <div id="contractorsList" class="contractors-container">
+                                    ${renderContractorsListSimple(step.contractors || [])}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 이미지 업로드 섹션 -->
+                        <div class="step-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <h3>시공 이미지</h3>
+                                <button type="button" class="btn-add-image" onclick="addWorkflowImage(${step.id})">
+                                    <i class="fas fa-plus"></i> 업로드
+                                </button>
+                            </div>
+                            <div class="section-content">
+                                <div id="images-${step.id}" class="images-container">
+                                    ${step.images && step.images.length > 0 ? step.images.map((imageData, index) => createImagePreview(imageData, step.id, index)).join('') : '<p class="no-images">업로드된 이미지가 없습니다.</p>'}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- 업체 관리 섹션 -->
-                    <div class="step-section">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h3>업체 관리</h3>
-                            <button type="button" class="btn-add-contractor" onclick="addContractor()">
-                                <i class="fas fa-plus"></i> 추가
-                            </button>
-                        </div>
-                        <div class="section-content">
-                            <div id="contractorsList" class="contractors-container">
-                                ${renderContractorsListSimple(step.contractors)}
-                            </div>
-                        </div>
+                    <div class="modal-footer step-modal-footer">
+                        <button type="button" class="btn-secondary btn-cancel" onclick="closeWorkflowStepModal()">
+                            <i class="fas fa-times"></i> 취소
+                        </button>
+                        <button type="button" class="btn-primary btn-save" onclick="saveWorkflowStep()">
+                            <i class="fas fa-save"></i> 저장
+                        </button>
                     </div>
-                    
-                    <!-- 이미지 업로드 섹션 -->
-                    <div class="step-section">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                <i class="fas fa-images"></i>
-                            </div>
-                            <h3>시공 이미지</h3>
-                            <button type="button" class="btn-add-image" onclick="addWorkflowImage(${step.id})">
-                                <i class="fas fa-plus"></i> 업로드
-                            </button>
-                        </div>
-                        <div class="section-content">
-                            <div id="images-${step.id}" class="images-container">
-                                ${step.images && step.images.length > 0 ? step.images.map((imageData, index) => createImagePreview(imageData, step.id, index)).join('') : '<p class="no-images">업로드된 이미지가 없습니다.</p>'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer step-modal-footer">
-                    <button type="button" class="btn-secondary btn-cancel" onclick="closeWorkflowStepModal()">
-                        <i class="fas fa-times"></i> 취소
-                    </button>
-                    <button type="button" class="btn-primary btn-save" onclick="saveWorkflowStep()">
-                        <i class="fas fa-save"></i> 저장
-                    </button>
                 </div>
             </div>
-        </div>
-    `;
-    
-    // 기존 모달 제거
-    const existingModal = document.getElementById('workflowStepModal');
-    if (existingModal) {
-        existingModal.remove();
+        `;
+        
+        // 기존 모달 제거
+        const existingModal = document.getElementById('workflowStepModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // 새 모달 추가
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        const modal = document.getElementById('workflowStepModal');
+        
+        if (modal) {
+            modal.style.display = 'flex';
+            console.log('✅ 모달이 성공적으로 생성되었습니다');
+            
+            // 상태 배지 클릭 이벤트 설정
+            setupStatusBadges();
+            
+            // 이미지 목록 렌더링
+            renderWorkflowImages(step.id);
+            
+            showNotification(`${step.name} 관리 모달이 열렸습니다.`, 'success');
+        } else {
+            console.error('❌ 모달 생성에 실패했습니다');
+            showNotification('모달을 열 수 없습니다.', 'error');
+        }
+        
+    } catch (error) {
+        console.error('❌ 모달 열기 중 오류:', error);
+        showNotification('모달을 열 수 없습니다: ' + error.message, 'error');
     }
-    
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    const modal = document.getElementById('workflowStepModal');
-    modal.style.display = 'flex';
-    
-    // 상태 배지 클릭 이벤트 설정
-    setupStatusBadges();
-    
-    // 이미지 목록 렌더링
-    renderWorkflowImages(step.id);
 }
 
 function setupStatusBadges() {
@@ -3515,4 +3570,39 @@ function renderWorkflowImages(stepId) {
     imagesContainer.innerHTML = step.images.map((imageData, index) => 
         createImagePreview(imageData, stepId, index)
     ).join('');
-} 
+}
+
+// === 날짜별 일정 목록 모달 ===
+function openDaySchedulesModal(date, schedulesForDate) {
+    const dateLabel = formatDate(date);
+    const modalHTML = `
+        <div id="daySchedulesModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>${dateLabel} 일정 목록</h3>
+                    <span class="close" onclick="closeDaySchedulesModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    ${schedulesForDate.map(s => `
+                        <div class="schedule-item" onclick="(function(){closeDaySchedulesModal();openScheduleDetailModal(${JSON.stringify(s).replace(/"/g, '&quot;')});})()">
+                            <span class="status-badge ${s.status || 'pending'}">${getStatusText(s.status)}</span>
+                            <span class="item-title">${s.title}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeDaySchedulesModal()">닫기</button>
+                    <button type="button" class="btn-primary" onclick="(function(){closeDaySchedulesModal();openScheduleModal(null, '${formatDateForInput(date)}');})();">새 일정 추가</button>
+                </div>
+            </div>
+        </div>`;
+    // 중복 방지
+    const existing = document.getElementById('daySchedulesModal');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.getElementById('daySchedulesModal').style.display = 'flex';
+}
+function closeDaySchedulesModal() {
+    const modal = document.getElementById('daySchedulesModal');
+    if (modal) modal.remove();
+}

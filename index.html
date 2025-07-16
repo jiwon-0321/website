@@ -124,7 +124,7 @@
                                 </span>
                                 <span class="stat-compact pending">
                                     <i class="fas fa-clock"></i> 
-                                    <span id="pendingSteps">8</span>
+                                    <span id="pendingSteps">9</span>
                                 </span>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[0])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 1))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
@@ -165,7 +165,7 @@
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[1])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 2))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
@@ -185,27 +185,27 @@
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[2])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 3))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="timeline-step" data-step="4" data-name="타일" data-status="pending">
+                        <div class="timeline-step" data-step="4" data-name="바닥 수평" data-status="pending">
                             <div class="step-connector"></div>
                             <div class="step-content">
                                 <div class="step-badge">
                                     <div class="step-number">4</div>
-                                    <div class="step-icon"><i class="fas fa-th-large"></i></div>
+                                    <div class="step-icon"><i class="fas fa-level-up-alt"></i></div>
                                 </div>
                                 <div class="step-info">
-                                    <h4 class="step-title">타일</h4>
-                                    <p class="step-description">기존 타일 철거 및 신규 타일 시공</p>
+                                    <h4 class="step-title">바닥 수평</h4>
+                                    <p class="step-description">바닥 수평 측정 및 기준 설정</p>
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[3])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 4))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
@@ -225,18 +225,38 @@
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[4])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 5))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="timeline-step" data-step="6" data-name="마감재" data-status="pending">
+                        <div class="timeline-step" data-step="6" data-name="타일" data-status="pending">
                             <div class="step-connector"></div>
                             <div class="step-content">
                                 <div class="step-badge">
                                     <div class="step-number">6</div>
+                                    <div class="step-icon"><i class="fas fa-th-large"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">타일</h4>
+                                    <p class="step-description">기존 타일 철거 및 신규 타일 시공</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 6))">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="7" data-name="벽지+바닥" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">7</div>
                                     <div class="step-icon"><i class="fas fa-paint-roller"></i></div>
                                 </div>
                                 <div class="step-info">
@@ -245,47 +265,47 @@
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[5])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 7))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="timeline-step" data-step="7" data-name="전기마감" data-status="pending">
-                            <div class="step-connector"></div>
-                            <div class="step-content">
-                                <div class="step-badge">
-                                    <div class="step-number">7</div>
-                                    <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
-                                </div>
-                                <div class="step-info">
-                                    <h4 class="step-title">전기마감</h4>
-                                    <p class="step-description">조명 및 전기기구 최종 설치</p>
-                                    <div class="step-status-badge" data-status="pending">대기중</div>
-                                </div>
-                                <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[6])">
-                                        <i class="fas fa-cog"></i> 관리
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="timeline-step" data-step="8" data-name="청소" data-status="pending">
+                        <div class="timeline-step" data-step="8" data-name="전기 마감" data-status="pending">
                             <div class="step-connector"></div>
                             <div class="step-content">
                                 <div class="step-badge">
                                     <div class="step-number">8</div>
+                                    <div class="step-icon"><i class="fas fa-bolt"></i></div>
+                                </div>
+                                <div class="step-info">
+                                    <h4 class="step-title">전기 마감</h4>
+                                    <p class="step-description">조명 및 전기기구 최종 설치</p>
+                                    <div class="step-status-badge" data-status="pending">대기중</div>
+                                </div>
+                                <div class="step-actions">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 8))">
+                                        <i class="fas fa-cog"></i> 관리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step" data-step="9" data-name="입주청소" data-status="pending">
+                            <div class="step-connector"></div>
+                            <div class="step-content">
+                                <div class="step-badge">
+                                    <div class="step-number">9</div>
                                     <div class="step-icon"><i class="fas fa-broom"></i></div>
                                 </div>
                                 <div class="step-info">
-                                    <h4 class="step-title">청소</h4>
+                                    <h4 class="step-title">입주청소</h4>
                                     <p class="step-description">최종 청소 및 정리</p>
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow[7])">
+                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 9))">
                                         <i class="fas fa-cog"></i> 관리
                                     </button>
                                 </div>
