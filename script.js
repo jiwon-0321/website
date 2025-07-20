@@ -26,8 +26,15 @@ let memos = [];
 
 // 원형 워크플로우 데이터 구조
 let circularWorkflow = [
+    { id: 1, name: "샤시", icon: "window-maximize", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 2, name: "전기", icon: "bolt", status: "pending", progress: 0, details: "", contractors: [], images: [] },
     { id: 3, name: "문", icon: "door-closed", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 4, name: "바닥 수평", icon: "ruler-horizontal", status: "pending", progress: 0, details: "", contractors: [], images: [] }
+    { id: 4, name: "바닥 수평", icon: "ruler-horizontal", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 5, name: "목공", icon: "hammer", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 6, name: "타일", icon: "border-all", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 7, name: "벽지+바닥", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 8, name: "전기 마감", icon: "plug", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 9, name: "입주청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [], images: [] }
 ];
 
 // 기본 워크플로우 백업: Firebase 데이터 누락 시 병합/복구용
