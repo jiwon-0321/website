@@ -185,9 +185,9 @@
                                     <div class="step-status-badge" data-status="pending">대기중</div>
                                 </div>
                                 <div class="step-actions">
-                                    <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 3))">
-                                        <i class="fas fa-cog"></i> 관리
-                                    </button>
+                                                        <button class="btn-step-manage" onclick="openWorkflowStepModal(circularWorkflow.find(step => step.id === 3))">
+                        <i class="fas fa-cog"></i> 관리
+                    </button>
                                 </div>
                             </div>
                         </div>
@@ -639,5 +639,34 @@
     <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-storage-compat.js"></script>
     <script src="script.js"></script>
+    <script>
+        (function() {
+            const STEP_NAME_MAP = {
+                1: '샤시',
+                2: '전기',
+                3: '바닥 수평',
+                4: '문',
+                5: '목공',
+                6: '타일',
+                7: '마감재',
+                8: '전기 마감',
+                9: '입주청소'
+            };
+            const originalOpenWorkflowStepModal = window.openWorkflowStepModal;
+            window.openWorkflowStepModal = function(step) {
+                if (typeof originalOpenWorkflowStepModal === 'function') {
+                    originalOpenWorkflowStepModal(step);
+                    const modal = document.getElementById('workflowStepModal');
+                    if (modal && step) {
+                        const displayName = STEP_NAME_MAP[step.id] || step.name;
+                        const titleEl = modal.querySelector('.step-modal-title-info h2');
+                        if (titleEl) titleEl.textContent = `${displayName} 단계 관리`;
+                        const textareaEl = modal.querySelector('#stepDetails');
+                        if (textareaEl) textareaEl.placeholder = `${displayName} 시공의 세부 내용을 상세히 입력해주세요...`;
+                    }
+                }
+            };
+        })();
+    </script>
 </body>
 </html> 

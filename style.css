@@ -2370,13 +2370,24 @@ form {
 /* 이미지 모달 스타일 */
 .image-modal {
     z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(5px);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
 }
 
 .image-modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: 95vw;
+    max-height: 95vh;
     width: auto;
     height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .image-modal-body {
@@ -2385,14 +2396,17 @@ form {
     align-items: center;
     justify-content: center;
     background: #000;
+    min-height: 300px;
 }
 
 .modal-image {
     max-width: 100%;
-    max-height: 70vh;
+    max-height: 80vh;
     width: auto;
     height: auto;
     object-fit: contain;
+    cursor: zoom-out;
+    transition: transform 0.3s ease;
 }
 
 /* 모바일 최적화 */
@@ -2421,6 +2435,37 @@ form {
     .btn-add-image {
         padding: 6px 12px;
         font-size: 12px;
+    }
+    
+    /* 이미지 모달 모바일 최적화 */
+    .image-modal-content {
+        max-width: 98vw;
+        max-height: 98vh;
+        margin: 10px;
+    }
+    
+    .modal-image {
+        max-height: 75vh;
+    }
+    
+    .image-modal .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .image-modal .modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .image-modal .modal-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .image-modal .modal-footer .btn-primary,
+    .image-modal .modal-footer .btn-secondary {
+        width: 100%;
+        justify-content: center;
     }
 }
 

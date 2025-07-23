@@ -26,13 +26,72 @@ let memos = [];
 
 // 원형 워크플로우 데이터 구조
 let circularWorkflow = [
-    { id: 1, name: "샤시", icon: "window-maximize", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 1, name: "샤시", icon: "window-maximize", status: "pending", progress: 0, details: "", contractors: [], images: [
+        {
+            originalName: "샤시 견적서",
+            url: "images/window.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "작은방 샤시",
+            url: "images/작은방 샤시.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "주방 샤시",
+            url: "images/주방 샤시.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "큰방 샤시",
+            url: "images/큰방 샤시.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "화장실 샤시",
+            url: "images/화장실 샤시.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        }
+    ] },
     { id: 2, name: "전기", icon: "bolt", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 3, name: "문", icon: "door-closed", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 4, name: "바닥 수평", icon: "ruler-horizontal", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 5, name: "목공", icon: "hammer", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 4, name: "문", icon: "door-closed", status: "pending", progress: 0, details: "", contractors: [], images: [
+        {
+            originalName: "문+목공 견적서",
+            url: "images/문+목공 견적서.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        }
+    ] },
+    { id: 3, name: "바닥 수평", icon: "ruler-horizontal", status: "pending", progress: 0, details: "", contractors: [], images: [
+        {
+            originalName: "셀프 레벨링 견적서",
+            url: "images/셀프 레벨링 견적서.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        }
+    ] },
+    { id: 5, name: "목공", icon: "hammer", status: "pending", progress: 0, details: "", contractors: [], images: [
+        {
+            originalName: "문+목공 견적서",
+            url: "images/문+목공 견적서.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        }
+    ] },
     { id: 6, name: "타일", icon: "border-all", status: "pending", progress: 0, details: "", contractors: [], images: [] },
-    { id: 7, name: "벽지+바닥", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 7, name: "마감재", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [
+        {
+            originalName: "도배+바닥 견적서",
+            url: "images/도배+바닥 견적서.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        }
+    ] },
     { id: 8, name: "전기 마감", icon: "plug", status: "pending", progress: 0, details: "", contractors: [], images: [] },
     { id: 9, name: "입주청소", icon: "broom", status: "pending", progress: 0, details: "", contractors: [], images: [] }
 ];
@@ -198,6 +257,13 @@ function init() {
         
         // 사용자 정의 확인 모달 설정
         setupCustomConfirmModal();
+        
+        // 업데이트된 워크플로우를 Firebase에 저장 (이미지 데이터 동기화)
+        setTimeout(() => {
+            saveWorkflowToFirebase().catch(error => {
+                console.log('워크플로우 자동 저장 중 오류:', error);
+            });
+        }, 2000);
         
     } catch (error) {
         console.error('Firebase 초기화 오류:', error);
@@ -368,11 +434,24 @@ function loadWorkflowFromFirebase() {
                     circularWorkflow.push({ ...defStep });
                 } else {
                     // 필수 필드 누락 시 기본값으로 보완
-                    ['name', 'icon', 'status', 'progress', 'details', 'contractors', 'images'].forEach(key => {
+                    ['name', 'icon', 'status', 'progress', 'details', 'contractors'].forEach(key => {
                         if (found[key] === undefined || found[key] === null) {
                             found[key] = Array.isArray(defStep[key]) ? [...defStep[key]] : defStep[key];
                         }
                     });
+                    
+                    // 이미지는 특별 처리: 기본 데이터의 이미지가 더 많으면 병합
+                    if (found.images === undefined || found.images === null) {
+                        found.images = [...defStep.images];
+                    } else if (defStep.images && defStep.images.length > found.images.length) {
+                        // 기본 데이터에 더 많은 이미지가 있으면 병합
+                        const existingUrls = found.images.map(img => img.url);
+                        defStep.images.forEach(img => {
+                            if (!existingUrls.includes(img.url)) {
+                                found.images.push({...img});
+                            }
+                        });
+                    }
                 }
             });
 
@@ -3418,18 +3497,21 @@ function createImagePreview(imageData, stepId, imageIndex) {
 // 이미지 모달 열기 함수
 function openImageModal(imageUrl, imageName) {
     const modalHTML = `
-        <div id="imageModal" class="modal image-modal">
-            <div class="modal-content image-modal-content">
+        <div id="imageModal" class="modal image-modal" onclick="closeImageModal()">
+            <div class="modal-content image-modal-content" onclick="event.stopPropagation()">
                 <div class="modal-header">
                     <h3>${imageName}</h3>
-                    <span class="close" onclick="closeImageModal()">&times;</span>
+                    <span class="close" onclick="closeImageModal()" title="닫기 (ESC)">&times;</span>
                 </div>
                 <div class="modal-body image-modal-body">
-                    <img src="${imageUrl}" alt="${imageName}" class="modal-image">
+                    <img src="${imageUrl}" alt="${imageName}" class="modal-image" onclick="closeImageModal()" title="클릭하여 닫기">
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeImageModal()">
+                        <i class="fas fa-times"></i> 닫기
+                    </button>
                     <button type="button" class="btn-primary" onclick="window.open('${imageUrl}', '_blank')">
-                        <i class="fas fa-external-link-alt"></i> 원본 크기로 보기
+                        <i class="fas fa-external-link-alt"></i> 새 탭에서 보기
                     </button>
                 </div>
             </div>
@@ -3443,14 +3525,39 @@ function openImageModal(imageUrl, imageName) {
     }
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    document.getElementById('imageModal').style.display = 'flex';
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'flex';
+    
+    // ESC 키로 닫기 기능 추가
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            closeImageModal();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
+    
+    // 모달 표시 애니메이션
+    setTimeout(() => {
+        modal.style.opacity = '1';
+    }, 10);
 }
 
 // 이미지 모달 닫기 함수
 function closeImageModal() {
     const modal = document.getElementById('imageModal');
     if (modal) {
-        modal.remove();
+        // 페이드 아웃 애니메이션
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.95)';
+        
+        // 애니메이션 후 제거
+        setTimeout(() => {
+            modal.remove();
+        }, 200);
+        
+        // ESC 키 이벤트 리스너 제거
+        document.removeEventListener('keydown', arguments.callee.escapeHandler);
     }
 }
 
