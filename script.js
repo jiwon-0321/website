@@ -2013,6 +2013,31 @@ function openWorkflowStepModal(step) {
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- 시공이미지 섹션 -->
+                        <div class="step-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <h3>시공이미지</h3>
+                            </div>
+                            <div class="section-content">
+                                <div id="images-${step.id}" class="images-container">
+                                    ${step.images && step.images.length > 0 ? 
+                                        step.images.map((imageData, index) => `
+                                            <div class="image-preview" onclick="openImageModal('${encodeURI(imageData.url).replace(/\+/g, '%2B')}', '${imageData.originalName}')">
+                                                <img src="${encodeURI(imageData.url).replace(/\+/g, '%2B')}" alt="${imageData.originalName}">
+                                                <div class="image-info">
+                                                    <span class="image-name">${imageData.originalName}</span>
+                                                </div>
+                                            </div>
+                                        `).join('') : 
+                                        '<p class="no-images">저장된 이미지가 없습니다.</p>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer step-modal-footer">
                         <button type="button" class="btn-secondary btn-cancel" onclick="closeWorkflowStepModal()">
