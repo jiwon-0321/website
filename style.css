@@ -1,4 +1,4 @@
-/* 전역 설정 */
+/* ?�역 ?�정 */
 * {
     margin: 0;
     padding: 0;
@@ -19,7 +19,7 @@ body {
     padding: 20px;
 }
 
-/* 헤더 스타일 */
+/* ?�더 ?��???*/
 .header {
     background: linear-gradient(135deg, #333333 0%, #2a2a2a 50%, #1a1a1a 100%);
     color: white;
@@ -58,7 +58,7 @@ body {
     margin: 0;
 }
 
-/* 글로벌 검색 */
+/* 글로벌 검??*/
 .global-search {
     min-width: 350px;
 }
@@ -112,7 +112,7 @@ body {
     background: rgba(0, 0, 0, 0.1);
 }
 
-/* 네비게이션 탭 개선 - 비율 맞추기 */
+/* ?�비게이????개선 - 비율 맞추�?*/
 .nav-tabs {
     display: flex;
     gap: 15px;
@@ -158,7 +158,7 @@ body {
 }
 
 .tab-btn i {
-    /* 아이콘이 버튼 높이를 넘지 않도록 크기 조정 */
+    /* ?�이콘이 버튼 ?�이�??��? ?�도�??�기 조정 */
     font-size: 1.2rem;
     line-height: 1;
 }
@@ -179,7 +179,7 @@ body {
     color: white;
 }
 
-/* 섹션 헤더 및 필터 */
+/* ?�션 ?�더 �??�터 */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -252,7 +252,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 캘린더 컨테이너 - 세로폭 줄이기 */
+/* 캘린??컨테?�너 - ?�로??줄이�?*/
 .calendar-container {
     background: white;
     border-radius: 15px;
@@ -284,7 +284,7 @@ body {
         line-height: 1.2;
     }
 
-/* 중복 정의 주석 처리
+/* 중복 ?�의 주석 처리
 .calendar-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -404,7 +404,7 @@ body {
     background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
 }
 
-/* 중요사항 아코디언 스타일 */
+/* 중요?�항 ?�코?�언 ?��???*/
 .important-container {
     background: white;
     border-radius: 15px;
@@ -527,7 +527,7 @@ body {
     justify-content: flex-end;
 }
 
-/* 검색 결과 하이라이트 */
+/* 검??결과 ?�이?�이??*/
 .highlight {
     background: #fbbf24;
     color: #92400e;
@@ -537,7 +537,7 @@ body {
     box-shadow: 0 1px 3px rgba(251, 191, 36, 0.3);
 }
 
-/* 워크플로우 검색 매치 효과 */
+/* ?�크?�로??검??매치 ?�과 */
 .timeline-step.search-match {
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
     border-radius: 12px;
@@ -553,7 +553,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* 로딩 상태 */
+/* 로딩 ?�태 */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -577,13 +577,13 @@ body {
     animation: spin 1s linear infinite;
 }
 
-/* 터치 친화적인 요소들 */
+/* ?�치 친화?�인 ?�소??*/
 .touch-friendly {
     min-height: 44px;
     min-width: 44px;
 }
 
-/* 모바일 최적화 */
+/* 모바??최적??*/
 @media (max-width: 768px) {
     .header-top {
         flex-direction: column;
@@ -610,7 +610,7 @@ body {
     .nav-tabs {
         flex-direction: row;
         gap: 4px;
-        overflow: hidden; /* 좌우 스크롤 제거 */
+        overflow: hidden; /* 좌우 ?�크�??�거 */
         padding-bottom: 5px;
         touch-action: manipulation;
         justify-content: space-between;
@@ -681,7 +681,7 @@ body {
         padding-left: 44px;
     }
     
-    /* 모바일 터치 최적화 */
+    /* 모바???�치 최적??*/
     .btn-primary, .btn-secondary, .btn-danger, .btn-edit {
         min-height: 44px;
         padding: 10px 16px;
@@ -713,7 +713,7 @@ body {
         font-size: 1rem;
     }
 
-    /* 시공 스케쥴 - 캘린더 모바일 최적화 */
+    /* ?�공 ?��?�?- 캘린??모바??최적??*/
     .schedule-controls {
         display: flex;
         flex-wrap: wrap;
@@ -781,7 +781,7 @@ body {
         word-wrap: break-word;
     }
 
-    /* 시공 순서도 - 연결선 개선 */
+    /* ?�공 ?�서??- ?�결??개선 */
     .step-connector {
         width: 3px;
         height: 100%;
@@ -799,7 +799,7 @@ body {
         height: calc(100% + 50px);
     }
 
-    /* 중요사항 - 모바일에서 세로 정렬 */
+    /* 중요?�항 - 모바?�에???�로 ?�렬 */
     .important-list {
         display: flex;
         flex-direction: column;
@@ -850,7 +850,7 @@ body {
         margin: 0;
     }
     
-    /* 카드 간격 증가 */
+    /* 카드 간격 증�? */
     .schedule-item, .budget-item, .process-item,
     .memo-item, .important-item {
         margin-bottom: 16px;
@@ -907,7 +907,7 @@ body {
     }
 
     .calendar-title {
-        font-size: 0.9rem; /* 사이즈 소폭 축소 */
+        font-size: 0.9rem; /* ?�이�??�폭 축소 */
         font-weight: 700;
         color: white !important;
         line-height: 1.2;
@@ -915,8 +915,8 @@ body {
         margin: 0;
         padding: 4px 0;
         white-space: nowrap;
-        flex: 1; /* 양쪽 버튼 사이 공간을 모두 차지 */
-        text-align: center; /* 공간 안에서 텍스트 중앙 정렬 */
+        flex: 1; /* ?�쪽 버튼 ?�이 공간??모두 차�? */
+        text-align: center; /* 공간 ?�에???�스??중앙 ?�렬 */
     }
 
     .tab-btn i {
@@ -941,7 +941,7 @@ body {
         line-height: 1.3;
     }
     
-    /* 모바일 터치 최적화 강화 */
+    /* 모바???�치 최적??강화 */
     .btn-primary, .btn-secondary, .btn-danger, .btn-edit {
         min-height: 42px;
         padding: 8px 14px;
@@ -968,7 +968,7 @@ body {
         font-size: 0.9rem;
     }
 
-    /* 시공 스케쥴 - 캘린더 모바일 최적화 */
+    /* ?�공 ?��?�?- 캘린??모바??최적??*/
     .schedule-controls {
         display: flex;
         flex-wrap: wrap;
@@ -1018,7 +1018,7 @@ body {
         border-radius: 2px;
     }
 
-    /* 중요사항 - 모바일에서 가로 정렬 */
+    /* 중요?�항 - 모바?�에??가�??�렬 */
     .important-item {
         display: flex;
         align-items: flex-start;
@@ -1061,7 +1061,7 @@ body {
         margin: 0;
     }
     
-    /* 카드 스타일 개선 */
+    /* 카드 ?��???개선 */
     .schedule-item, .budget-item, .process-item,
     .memo-item, .important-item {
         margin-bottom: 20px;
@@ -1087,13 +1087,13 @@ body {
     }
 }
 
-/* 스와이프 제스처 지원 */
+/* ?��??�프 ?�스�?지??*/
 .swipeable {
     touch-action: pan-y;
     user-select: none;
 }
 
-/* 드래그 앤 드롭 개선 */
+/* ?�래�????�롭 개선 */
 .draggable {
     cursor: grab;
     transition: all 0.3s ease;
@@ -1115,7 +1115,7 @@ body {
     background: rgba(16, 185, 129, 0.1);
 }
 
-/* 애니메이션 개선 */
+/* ?�니메이??개선 */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -1146,7 +1146,7 @@ body {
     animation: slideOut 0.3s ease forwards;
 }
 
-/* 빈 상태 메시지 개선 */
+/* �??�태 메시지 개선 */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -1171,7 +1171,7 @@ body {
     margin-bottom: 0;
 }
 
-/* 컨텐츠 섹션 */
+/* 컨텐�??�션 */
 .content-section {
     display: none;
     background: white;
@@ -1194,7 +1194,7 @@ body {
 
 
 
-/* 버튼 스타일 */
+/* 버튼 ?��???*/
 .btn-primary {
     background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
     color: white;
@@ -1268,7 +1268,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 예산 요약 카드 */
+/* ?�산 ?�약 카드 */
 .budget-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1311,7 +1311,7 @@ body {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* 예상 사용 금액 스타일 */
+/* ?�상 ?�용 금액 ?��???*/
 .estimated-usage {
     font-size: 0.85rem;
     color: #6b7280;
@@ -1322,7 +1322,7 @@ body {
     border-left: 3px solid #10b981;
 }
 
-/* 예상 잔여예산 스타일 */
+/* ?�상 ?�여?�산 ?��???*/
 .estimated-remaining {
     font-size: 0.85rem;
     color: #10b981;
@@ -1331,7 +1331,7 @@ body {
     font-weight: 500;
 }
 
-/* 메모 완료 체크박스 스타일 */
+/* 메모 ?�료 체크박스 ?��???*/
 .checkbox-label {
     display: flex;
     align-items: center;
@@ -1379,7 +1379,7 @@ body {
     gap: 4px;
 }
 
-/* 중요사항 스타일 */
+/* 중요?�항 ?��???*/
 .important-container {
     margin-top: 20px;
 }
@@ -1471,7 +1471,7 @@ body {
 
 
 
-/* 리스트 아이템 스타일 */
+/* 리스???�이???��???*/
 .schedule-item, .budget-item, .process-item {
     background: #f8f9fa;
     border-radius: 10px;
@@ -1520,7 +1520,7 @@ body {
     font-style: italic;
 }
 
-/* 공정 상태 뱃지 */
+/* 공정 ?�태 뱃�? */
 .status-badge {
     padding: 4px 12px;
     border-radius: 20px;
@@ -1544,7 +1544,7 @@ body {
     color: #333333;
 }
 
-/* 모달 스타일 */
+/* 모달 ?��???*/
 .modal {
     display: none;
     position: fixed;
@@ -1612,7 +1612,7 @@ body {
     opacity: 0.7;
 }
 
-/* 폼 스타일 */
+/* ???��???*/
 form {
     padding: 30px;
     flex: 1;
@@ -1663,7 +1663,7 @@ form {
     flex-shrink: 0;
 }
 
-/* 모바일 모달 최적화 */
+/* 모바??모달 최적??*/
 @media (max-width: 768px) {
     .modal-content {
         width: 90%;
@@ -1826,7 +1826,7 @@ form {
     }
 }
 
-/* 사용자 정의 확인 모달 스타일 */
+/* ?�용???�의 ?�인 모달 ?��???*/
 .confirm-modal {
     display: none;
     position: fixed;
@@ -1944,7 +1944,7 @@ form {
     background: #c82333;
 }
 
-/* 모바일 확인 모달 최적화 */
+/* 모바???�인 모달 최적??*/
 @media (max-width: 768px) {
     .confirm-modal-content {
         width: 75%;
@@ -2024,7 +2024,7 @@ form {
     }
 }
 
-/* 드래그 앤 드롭 스타일 */
+/* ?�래�????�롭 ?��???*/
 .process-item.dragging {
     opacity: 0.5;
     transform: rotate(5deg);
@@ -2049,7 +2049,7 @@ form {
     border-color: #555555;
 }
 
-/* 스케줄 컨트롤 버튼 */
+/* ?��?�?컨트�?버튼 */
 .schedule-controls {
     display: flex;
     gap: 10px;
@@ -2083,7 +2083,7 @@ form {
     margin-right: 6px;
 }
 
-/* 캘린더 스타일 */
+/* 캘린???��???*/
 .calendar-container {
     background: #f8f9fa;
     border-radius: 15px;
@@ -2224,17 +2224,17 @@ form {
     background: linear-gradient(135deg, #74c0fc 0%, #339af0 100%);
 }
 
-/* 일정 상세보기 모달 */
+/* ?�정 ?�세보기 모달 */
 .schedule-detail-content {
     padding: 20px;
     flex: 1;
     overflow-y: auto;
-    max-height: calc(90vh - 140px); /* 헤더 높이 제외 */
+    max-height: calc(90vh - 140px); /* ?�더 ?�이 ?�외 */
 }
 
-/* === 이미지 업로드 스타일 === */
+/* === ?��?지 ?�로???��???=== */
 
-/* 이미지 업로드 버튼 */
+/* ?��?지 ?�로??버튼 */
 .btn-add-image {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -2254,7 +2254,7 @@ form {
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-/* 이미지 컨테이너 */
+/* ?��?지 컨테?�너 */
 .images-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -2262,7 +2262,7 @@ form {
     margin-top: 16px;
 }
 
-/* 이미지 미리보기 */
+/* ?��?지 미리보기 */
 .image-preview {
     position: relative;
     border-radius: 12px;
@@ -2289,7 +2289,7 @@ form {
     transform: scale(1.05);
 }
 
-/* 이미지 오버레이 */
+/* ?��?지 ?�버?�이 */
 .image-overlay {
     position: absolute;
     top: 0;
@@ -2303,13 +2303,14 @@ form {
     align-items: flex-start;
     justify-content: flex-end;
     padding: 12px;
+    pointer-events: none; /* ?�릭 ?�벤?��? ?��?지�??�달?�도�?*/
 }
 
 .image-preview:hover .image-overlay {
     opacity: 1;
 }
 
-/* 이미지 액션 버튼 */
+/* ?��?지 ?�션 버튼 */
 .image-actions {
     display: flex;
     gap: 8px;
@@ -2334,7 +2335,7 @@ form {
     transform: scale(1.1);
 }
 
-/* 이미지 정보 */
+/* ?��?지 ?�보 */
 .image-info {
     padding: 12px;
     background: white;
@@ -2356,7 +2357,7 @@ form {
     color: #666;
 }
 
-/* 이미지 없음 상태 */
+/* ?��?지 ?�음 ?�태 */
 .no-images {
     text-align: center;
     color: #666;
@@ -2367,7 +2368,7 @@ form {
     border: 2px dashed #ddd;
 }
 
-/* 이미지 모달 스타일 */
+/* ?��?지 모달 ?��???*/
 .image-modal {
     z-index: 2000;
     background-color: rgba(0, 0, 0, 0.9);
@@ -2378,6 +2379,7 @@ form {
     opacity: 0;
     transform: scale(0.95);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .image-modal-content {
@@ -2407,9 +2409,11 @@ form {
     object-fit: contain;
     cursor: zoom-out;
     transition: transform 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* 모바일 최적화 */
+/* 모바??최적??*/
 @media (max-width: 768px) {
     .images-container {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -2437,7 +2441,7 @@ form {
         font-size: 12px;
     }
     
-    /* 이미지 모달 모바일 최적화 */
+    /* ?��?지 모달 모바??최적??*/
     .image-modal-content {
         max-width: 98vw;
         max-height: 98vh;
@@ -2499,7 +2503,7 @@ form {
     border-top: 1px solid #e9ecef;
 }
 
-/* 시공 순서도 타임라인 스타일 - 개선된 버전 */
+/* ?�공 ?�서???�?�라???��???- 개선??버전 */
 .workflow-timeline-container {
     background: white;
     border-radius: 20px;
@@ -2521,7 +2525,7 @@ form {
     margin: 0 auto;
 }
 
-/* 전체 진행률 헤더 */
+/* ?�체 진행�??�더 */
 .timeline-header {
     background: linear-gradient(135deg, #666666 0%, #555555 100%);
     border-radius: 20px;
@@ -2588,7 +2592,7 @@ form {
     font-weight: 500;
 }
 
-/* 간소화된 진행률 헤더 */
+/* 간소?�된 진행�??�더 */
 .timeline-header-compact {
     margin-bottom: 20px;
     padding: 12px 20px;
@@ -2658,7 +2662,7 @@ form {
     color: #fbbf24;
 }
 
-/* 타임라인 단계들 */
+/* ?�?�라???�계??*/
 .timeline-steps {
     position: relative;
 }
@@ -2851,7 +2855,7 @@ form {
     margin-right: 8px;
 }
 
-/* 워크플로우 제어 버튼들 */
+/* ?�크?�로???�어 버튼??*/
 .workflow-controls {
     display: flex;
     justify-content: center;
@@ -2878,7 +2882,7 @@ form {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* 모바일 대응 (768px 이하) */
+/* 모바???�??(768px ?�하) */
 @media (max-width: 768px) {
     .workflow-timeline-container {
         padding: 30px 20px;
@@ -2990,7 +2994,7 @@ form {
     }
 }
 
-/* 소형 모바일 대응 (480px 이하) */
+/* ?�형 모바???�??(480px ?�하) */
 @media (max-width: 480px) {
     .workflow-timeline-container {
         padding: 25px 15px;
@@ -3046,7 +3050,7 @@ form {
     }
 }
 
-/* 스크롤바 스타일 */
+/* ?�크롤바 ?��???*/
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -3065,7 +3069,7 @@ form {
     background: linear-gradient(135deg, #555555 0%, #666666 100%);
 }
 
-/* 로딩 애니메이션 */
+/* 로딩 ?�니메이??*/
 .loading {
     display: inline-block;
     width: 20px;
@@ -3080,7 +3084,7 @@ form {
     to { transform: rotate(360deg); }
 }
 
-/* 알림 스타일 */
+/* ?�림 ?��???*/
 .notification {
     position: fixed;
     top: 20px;
@@ -3153,7 +3157,7 @@ form {
     }
 }
 
-/* 연결 상태 표시 */
+/* ?�결 ?�태 ?�시 */
 .connection-status {
     display: none !important;
     position: fixed;
@@ -3182,7 +3186,7 @@ form {
     }
 }
 
-/* 업체 관리 모달 스타일 */
+/* ?�체 관�?모달 ?��???*/
 .contractor-item {
     display: flex;
     align-items: center;
@@ -3230,7 +3234,7 @@ form {
     padding: 20px;
 }
 
-/* 워크플로우 단계 모달 스타일 */
+/* ?�크?�로???�계 모달 ?��???*/
 #workflowStepModal .modal-content {
     max-width: 600px;
     width: 90%;
@@ -3272,7 +3276,7 @@ form {
     background: #fafafa;
 }
 
-/* 상태별 시각적 피드백 강화 */
+/* ?�태�??�각???�드�?강화 */
 .workflow-step-circle[data-status="completed"] .step-icon {
     color: #28a745;
 }
@@ -3292,7 +3296,7 @@ form {
     100% { opacity: 1; }
 }
 
-/* 연결선 애니메이션 */
+/* ?�결???�니메이??*/
 .workflow-connections .completed-path {
     animation: flowCompleted 2s ease-in-out;
 }
@@ -3308,7 +3312,7 @@ form {
     }
 }
 
-/* 모바일에서의 업체 관리 최적화 */
+/* 모바?�에?�의 ?�체 관�?최적??*/
 @media (max-width: 768px) {
     .contractor-item {
         flex-direction: column;
@@ -3330,7 +3334,7 @@ form {
     }
 }
 
-/* 와이드 모달 스타일 */
+/* ?�?�드 모달 ?��???*/
 .wide-modal {
     position: fixed;
     top: 0;
@@ -3356,7 +3360,7 @@ form {
     overflow-y: auto;
 }
 
-/* 세부내용 관리 모달 스타일 */
+/* ?��??�용 관�?모달 ?��???*/
 .details-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -3453,7 +3457,7 @@ form {
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* 업체 관리 모달 스타일 */
+/* ?�체 관�?모달 ?��???*/
 .contractors-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -3586,7 +3590,7 @@ form {
     margin-top: 10px;
 }
 
-/* 반응형 디자인 */
+/* 반응???�자??*/
 @media (max-width: 768px) {
     .wide-modal {
         width: 98%;
@@ -3650,7 +3654,7 @@ form {
     }
 }
 
-/* 진행 상황 업데이트 모달 스타일 */
+/* 진행 ?�황 ?�데?�트 모달 ?��???*/
 .progress-summary {
     display: flex;
     gap: 20px;
@@ -3873,7 +3877,7 @@ form {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* 반응형 디자인 */
+/* 반응???�자??*/
 @media (max-width: 768px) {
     .progress-summary {
         flex-direction: column;
@@ -3948,7 +3952,7 @@ form {
     }
 }
 
-/* 개선된 단계관리 모달 스타일 */
+/* 개선???�계관�?모달 ?��???*/
 .step-modal-content {
     max-width: 850px;
     width: 90%;
@@ -4030,7 +4034,7 @@ form {
     overflow-y: auto;
 }
 
-/* 섹션 스타일 */
+/* ?�션 ?��???*/
 .step-section {
     background: white;
     border-radius: 15px;
@@ -4098,7 +4102,7 @@ form {
     padding: 25px;
 }
 
-/* 상태 선택기 스타일 */
+/* ?�태 ?�택�??��???*/
 .status-selector {
     display: flex;
     gap: 15px;
@@ -4171,7 +4175,7 @@ form {
     border-color: #17a2b8;
 }
 
-/* 세부 내용 입력 스타일 */
+/* ?��? ?�용 ?�력 ?��???*/
 .details-input-container {
     position: relative;
 }
@@ -4212,7 +4216,7 @@ form {
     font-size: 1rem;
 }
 
-/* 업체 관리 스타일 */
+/* ?�체 관�??��???*/
 .contractors-container {
     max-height: 300px;
     overflow-y: auto;
@@ -4382,7 +4386,7 @@ form {
     user-select: none;
 }
 
-/* 모달 푸터 스타일 */
+/* 모달 ?�터 ?��???*/
 .step-modal-footer {
     padding: 20px 30px;
     background: #f8f9fa;
@@ -4430,7 +4434,7 @@ form {
     box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
 }
 
-/* 모바일 대응 */
+/* 모바???�??*/
 @media (max-width: 768px) {
     .step-modal-content {
         width: 95%;
@@ -4538,7 +4542,7 @@ form {
     }
 }
 
-/* 간소화된 진행 상황 모달 스타일 */
+/* 간소?�된 진행 ?�황 모달 ?��???*/
 .progress-summary-compact {
     background: #f8f9fa;
     padding: 15px;
@@ -4635,7 +4639,7 @@ form {
     border-top: 1px solid #e9ecef;
 }
 
-/* 간소화된 업체 관리 모달 스타일 */
+/* 간소?�된 ?�체 관�?모달 ?��???*/
 .contractors-compact {
     display: flex;
     flex-direction: column;
@@ -4781,7 +4785,7 @@ form {
     padding: 16px;
 }
 
-/* 모바일 최적화 */
+/* 모바??최적??*/
 @media (max-width: 768px) {
     .progress-step-compact {
         flex-direction: column;
@@ -4835,7 +4839,7 @@ form {
     }
 }
 
-/* 간소화된 진행상태 섹션 스타일 */
+/* 간소?�된 진행?�태 ?�션 ?��???*/
 .status-badges {
     display: flex;
     justify-content: center;
@@ -4880,7 +4884,7 @@ form {
     font-size: 0.85rem;
 }
 
-/* 간소화된 업체관리 섹션 스타일 */
+/* 간소?�된 ?�체관�??�션 ?��???*/
 .empty-contractors-simple {
     text-align: center;
     padding: 30px 20px;
@@ -4994,7 +4998,7 @@ form {
     transform: scale(1.1);
 }
 
-/* 모바일 최적화 */
+/* 모바??최적??*/
 @media (max-width: 768px) {
     .contractor-item-simple {
         flex-direction: column;
@@ -5038,9 +5042,9 @@ form {
     }
 }
 
-/* 모바일 추가 최적화 */
+/* 모바??추�? 최적??*/
 
-/* 터치 친화적 스크롤바 */
+/* ?�치 친화???�크롤바 */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -5058,9 +5062,9 @@ form {
     background: #555555;
 }
 
-/* 모바일 터치 피드백 */
+/* 모바???�치 ?�드�?*/
 @media (max-width: 768px) {
-    /* 터치 피드백 효과 */
+    /* ?�치 ?�드�??�과 */
     .btn-primary:active,
     .btn-secondary:active,
     .btn-danger:active,
@@ -5069,7 +5073,7 @@ form {
         transition: transform 0.1s ease;
     }
     
-    /* 탭 버튼 스크롤바 숨기기 */
+    /* ??버튼 ?�크롤바 ?�기�?*/
     .nav-tabs {
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -5077,7 +5081,7 @@ form {
     
 
     
-    /* 중요사항 아이콘 선택기 최적화 */
+    /* 중요?�항 ?�이�??�택�?최적??*/
     .icon-selector {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
@@ -5105,7 +5109,7 @@ form {
         background: rgba(16, 185, 129, 0.1);
     }
     
-    /* 검색 결과 최적화 */
+    /* 검??결과 최적??*/
     .search-results {
         max-height: 60vh;
         overflow-y: auto;
@@ -5113,7 +5117,7 @@ form {
         padding: 8px;
     }
     
-    /* 빈 상태 메시지 최적화 */
+    /* �??�태 메시지 최적??*/
     .empty-state {
         padding: 40px 20px;
         text-align: center;
@@ -5134,7 +5138,7 @@ form {
         line-height: 1.5;
     }
     
-    /* 드래그 앤 드롭 최적화 */
+    /* ?�래�????�롭 최적??*/
     .draggable {
         cursor: grab;
         transition: all 0.2s ease;
@@ -5150,7 +5154,7 @@ form {
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
     
-    /* 로딩 스피너 최적화 */
+    /* 로딩 ?�피??최적??*/
     .loading-spinner {
         width: 32px;
         height: 32px;
@@ -5160,7 +5164,7 @@ form {
         animation: spin 1s linear infinite;
     }
     
-    /* 연결 상태 표시 최적화 */
+    /* ?�결 ?�태 ?�시 최적??*/
     .connection-status {
         display: none !important;
         font-size: 0.9rem;
@@ -5169,7 +5173,7 @@ form {
         margin-top: 12px;
     }
     
-    /* 진행률 표시 최적화 */
+    /* 진행�??�시 최적??*/
     .progress-bar {
         height: 8px;
         background: #e5e7eb;
@@ -5184,7 +5188,7 @@ form {
         transition: width 0.3s ease;
     }
     
-    /* 체크박스 최적화 */
+    /* 체크박스 최적??*/
     .checkbox-label {
         display: flex;
         align-items: center;
@@ -5201,7 +5205,7 @@ form {
         cursor: pointer;
     }
     
-    /* 상태 뱃지 최적화 */
+    /* ?�태 뱃�? 최적??*/
     .status-badge {
         font-size: 0.85rem;
         padding: 6px 12px;
@@ -5219,7 +5223,7 @@ form {
 }
 
 @media (max-width: 480px) {
-    /* 아이콘 선택기 더 작은 화면 최적화 */
+    /* ?�이�??�택�????��? ?�면 최적??*/
     .icon-selector {
         grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
         gap: 6px;
@@ -5231,7 +5235,7 @@ form {
         font-size: 1.1rem;
     }
     
-    /* 로딩 스피너 크기 조정 */
+    /* 로딩 ?�피???�기 조정 */
     .loading-spinner {
         width: 28px;
         height: 28px;
@@ -5240,20 +5244,20 @@ form {
     
 
     
-    /* 체크박스 크기 조정 */
+    /* 체크박스 ?�기 조정 */
     .checkbox-label input[type="checkbox"] {
         width: 18px;
         height: 18px;
     }
     
-    /* 상태 뱃지 크기 조정 */
+    /* ?�태 뱃�? ?�기 조정 */
     .status-badge {
         font-size: 0.8rem;
         padding: 4px 10px;
     }
 }
 
-/* 모바일 최적화 - 네비게이션 탭 버튼 수정 */
+/* 모바??최적??- ?�비게이????버튼 ?�정 */
 @media screen and (max-width: 768px) {
     .nav-tabs {
         padding-top: env(safe-area-inset-top, 10px);
@@ -5280,12 +5284,12 @@ form {
         box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
     }
     
-    /* 캘린더 모바일 최적화 - 가로 표시 및 균일한 날짜 칸 */
+    /* 캘린??모바??최적??- 가�??�시 �?균일???�짜 �?*/
     .calendar-container {
         padding: 10px;
         margin: 0 auto;
         max-width: 100%;
-        overflow: hidden; /* 좌우 스크롤 제거 */
+        overflow: hidden; /* 좌우 ?�크�??�거 */
         touch-action: manipulation;
     }
     
@@ -5398,7 +5402,7 @@ form {
         border-radius: 4px;
     }
     
-    /* 캘린더 480px 이하에서 더 작은 사이즈 */
+    /* 캘린??480px ?�하?�서 ???��? ?�이�?*/
     .calendar-day {
         min-height: 35px;
         font-size: 11px;
@@ -5411,7 +5415,7 @@ form {
     }
 }
 
-/* 중요사항 목록 모바일 최적화 */
+/* 중요?�항 목록 모바??최적??*/
 @media screen and (max-width: 768px) {
     .important-list {
         padding: 15px;
@@ -5557,7 +5561,7 @@ form {
     }
 }
 
-/* 전체 모바일 최적화 기본 설정 */
+/* ?�체 모바??최적??기본 ?�정 */
 @media screen and (max-width: 768px) {
     body {
         font-size: 14px;
@@ -5578,13 +5582,13 @@ form {
         -webkit-overflow-scrolling: none;
     }
     
-    /* 터치 최적화 */
+    /* ?�치 최적??*/
     button, .tab-btn, .calendar-day, .important-item {
         -webkit-tap-highlight-color: rgba(0,0,0,0);
         touch-action: manipulation;
     }
     
-    /* 스크롤 최적화 */
+    /* ?�크�?최적??*/
     .nav-tabs {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -5594,16 +5598,16 @@ form {
     
 
     
-    /* 입력 필드 모바일 최적화 */
+    /* ?�력 ?�드 모바??최적??*/
     input, textarea, select {
-        font-size: 16px; /* iOS 줌 방지 */
+        font-size: 16px; /* iOS �?방�? */
         border-radius: 6px;
         padding: 10px;
         border: 1px solid #ddd;
         background-color: white;
     }
     
-    /* 모달 모바일 최적화 */
+    /* 모달 모바??최적??*/
     .modal {
         padding: 10px;
     }
@@ -5616,32 +5620,64 @@ form {
     }
 } 
 
-/ *   = = =   ����t�����  ���T�  ����|�  = = =   * / 
- . i m a g e - p r e v i e w   { 
-         c u r s o r :   p o i n t e r ; 
-         t r a n s i t i o n :   t r a n s f o r m   0 . 3 s   e a s e ,   b o x - s h a d o w   0 . 3 s   e a s e ; 
- } 
- 
- . i m a g e - p r e v i e w : h o v e r   { 
-         t r a n s f o r m :   t r a n s l a t e Y ( - 2 p x ) ; 
-         b o x - s h a d o w :   0   6 p x   2 0 p x   r g b a ( 0 ,   0 ,   0 ,   0 . 1 5 ) ; 
- } 
- 
- . i m a g e - p r e v i e w   i m g   { 
-         b o r d e r - r a d i u s :   8 p x ; 
- } 
- 
- . i m a g e - i n f o   { 
-         t e x t - a l i g n :   c e n t e r ; 
-         p a d d i n g :   8 p x ; 
- } 
- 
- . i m a g e - n a m e   { 
-         f o n t - s i z e :   1 2 p x ; 
-         c o l o r :   # 6 6 6 ; 
-         d i s p l a y :   b l o c k ; 
-         w h i t e - s p a c e :   n o w r a p ; 
-         o v e r f l o w :   h i d d e n ; 
-         t e x t - o v e r f l o w :   e l l i p s i s ; 
- }  
- 
+/* 이미지 프리뷰 클릭 가능 스타일 */
+.image-preview {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-preview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.image-preview img {
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.image-info {
+    text-align: center;
+    padding: 8px;
+}
+
+.image-name {
+    font-size: 12px;
+    color: #666;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 이미지 액션 버튼들이 클릭 가능하도록 설정 */
+.image-actions {
+    pointer-events: auto;
+}
+
+.btn-image-delete {
+    pointer-events: auto;
+}
+
+/* 이미지 업로드 버튼 스타일 */
+.btn-add-image {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-add-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}

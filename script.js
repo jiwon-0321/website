@@ -2071,6 +2071,15 @@ function openWorkflowStepModal(step) {
             // 이미지 목록 렌더링
             renderWorkflowImages(step.id);
             
+            // 이미지 업로드 버튼 추가
+            const imagesSection = modal.querySelector('.step-section:last-child .section-content');
+            const uploadButton = document.createElement('button');
+            uploadButton.type = 'button';
+            uploadButton.className = 'btn-add-image';
+            uploadButton.innerHTML = '<i class="fas fa-plus"></i> 이미지 추가';
+            uploadButton.onclick = () => addWorkflowImage(step.id);
+            imagesSection.appendChild(uploadButton);
+            
             showNotification(`${step.name} 관리 모달이 열렸습니다.`, 'success');
         } else {
             console.error('❌ 모달 생성에 실패했습니다');
@@ -3503,6 +3512,8 @@ function createImagePreview(imageData, stepId, imageIndex) {
 
 // 이미지 모달 열기 함수
 function openImageModal(imageUrl, imageName) {
+    console.log('🖼️ 이미지 모달 열기:', imageName, imageUrl);
+    
     const modalHTML = `
         <div id="imageModal" class="modal image-modal" onclick="closeImageModal()">
             <div class="modal-content image-modal-content" onclick="event.stopPropagation()">
@@ -3547,7 +3558,11 @@ function openImageModal(imageUrl, imageName) {
     // 모달 표시 애니메이션
     setTimeout(() => {
         modal.style.opacity = '1';
+        modal.style.transform = 'scale(1)';
     }, 10);
+    
+    // 성공 알림
+    showNotification('이미지를 확대하여 표시합니다.', 'success');
 }
 
 // 이미지 모달 닫기 함수
@@ -3681,9 +3696,30 @@ function renderWorkflowImages(stepId) {
         return;
     }
     
-    imagesContainer.innerHTML = step.images.map((imageData, index) => 
-        createImagePreview(imageData, stepId, index)
-    ).join('');
+    // 이미지 HTML 생성
+    const imagesHTML = step.images.map((imageData, index) => {
+        // URL 인코딩 (mobile-fixes.js와 동일한 방식)
+        const encodedUrl = encodeURI(imageData.url).replace(/\+/g, '%2B');
+        
+        return `
+            <div class="image-preview" data-step-id="${stepId}" data-image-index="${index}">
+                <img src="${encodedUrl}" alt="${imageData.originalName}" onclick="openImageModal('${encodedUrl}', '${imageData.originalName}')">
+                <div class="image-overlay">
+                    <div class="image-actions">
+                        <button type="button" class="btn-image-delete" onclick="removeWorkflowImage(${stepId}, ${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="image-info">
+                    <span class="image-name">${imageData.originalName}</span>
+                    <span class="image-date">${formatDate(imageData.uploadedAt)}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    imagesContainer.innerHTML = imagesHTML;
 }
 
 // === 날짜별 일정 목록 모달 ===
