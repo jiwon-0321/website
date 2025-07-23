@@ -2013,24 +2013,6 @@ function openWorkflowStepModal(step) {
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- 이미지 업로드 섹션 -->
-                        <div class="step-section">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <i class="fas fa-images"></i>
-                                </div>
-                                <h3>시공 이미지</h3>
-                                <button type="button" class="btn-add-image" onclick="addWorkflowImage(${step.id})">
-                                    <i class="fas fa-plus"></i> 업로드
-                                </button>
-                            </div>
-                            <div class="section-content">
-                                <div id="images-${step.id}" class="images-container">
-                                    ${step.images && step.images.length > 0 ? step.images.map((imageData, index) => createImagePreview(imageData, step.id, index)).join('') : '<p class="no-images">업로드된 이미지가 없습니다.</p>'}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer step-modal-footer">
                         <button type="button" class="btn-secondary btn-cancel" onclick="closeWorkflowStepModal()">
