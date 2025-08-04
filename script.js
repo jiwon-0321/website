@@ -179,6 +179,12 @@ let circularWorkflow = [
             url: "images/화장실3.jpeg",
             uploadedAt: new Date().toISOString(),
             type: "image/png"
+        },
+        {
+            originalName: "화장실 자재 견적서",
+            url: "images/화장실 자재 견적서.png",
+            uploadedAt: new Date().toISOString(),
+            type: "image/png"
         }
     ] },
     { id: 7, name: "마감재", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [
