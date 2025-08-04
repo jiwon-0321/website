@@ -65,6 +65,36 @@ let circularWorkflow = [
             url: "images/문+목공 견적서.jpeg",
             uploadedAt: new Date().toISOString(),
             type: "image/jpeg"
+        },
+        {
+            originalName: "큰방문1",
+            url: "images/큰방문1.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "큰방문2",
+            url: "images/큰방문2.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "작은방문",
+            url: "images/작은방문.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "화장실문",
+            url: "images/화장실문.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "베란다문",
+            url: "images/베란다문.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
         }
     ] },
     { id: 3, name: "바닥 수평", icon: "ruler-horizontal", status: "pending", progress: 0, details: "", contractors: [], images: [
@@ -81,9 +111,76 @@ let circularWorkflow = [
             url: "images/문+목공 견적서.jpeg",
             uploadedAt: new Date().toISOString(),
             type: "image/jpeg"
+        },
+        {
+            originalName: "큰방 몰딩",
+            url: "images/큰방 몰딩.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "큰방 몰딩+걸레받이",
+            url: "images/큰방 몰딩+걸레받이.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "작은방 걸레받이",
+            url: "images/작은방 걸레받이.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "큰방 걸레받이",
+            url: "images/큰방 걸레받이.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "작은방 몰딩+걸레받이",
+            url: "images/작은방 몰딩+걸레받이.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "큰방 몰딩3",
+            url: "images/큰방 몰딩3.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
         }
     ] },
-    { id: 6, name: "타일", icon: "border-all", status: "pending", progress: 0, details: "", contractors: [], images: [] },
+    { id: 6, name: "타일", icon: "border-all", status: "pending", progress: 0, details: "", contractors: [], images: [
+        {
+            originalName: "타일 견적서",
+            url: "images/타일 견적서.png",
+            uploadedAt: new Date().toISOString(),
+            type: "image/png"
+        },
+        {
+            originalName: "주방타일",
+            url: "images/주방타일.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "화장실1",
+            url: "images/화장실1.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "화장실2",
+            url: "images/화장실2.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/jpeg"
+        },
+        {
+            originalName: "화장실3",
+            url: "images/화장실3.jpeg",
+            uploadedAt: new Date().toISOString(),
+            type: "image/png"
+        }
+    ] },
     { id: 7, name: "마감재", icon: "paint-roller", status: "pending", progress: 0, details: "", contractors: [], images: [
         {
             originalName: "도배+바닥 견적서",
